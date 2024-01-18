@@ -1,0 +1,179 @@
+* {
+   width-left-main-panel: 300px;
+}
+
+.topBarButton{
+	-fx-pref-width: 45px;
+	-fx-pref-height: 25px;		
+	-fx-border-color: TRANSPARENT;
+}
+
+#loginPane {
+	-fx-background: radial-gradient(center 50% 50%, radius 100%, rgb(237,203,155), rgb(195,159,108));
+}
+#loginPane .label {
+    -fx-text-fill: black; /* Ajusta el color según tus preferencias */
+}
+
+#loginLeftPane{
+	-fx-background-color: rgba(0, 0, 0, 0.5);
+	-fx-border-width: 5px;
+	-fx-border-color: white;
+}
+.loginTextField{
+	-fx-background-color: rgba(0, 0, 0, 0.2);
+	-fx-border-color: white;
+	-fx-border-width: 0.5px;
+	-fx-border-radius: 5px;
+	-fx-background-radius: 5px;
+}
+.loginTextField:focused{
+	-fx-background-color: rgba(0, 0, 0, 0.1);
+	-fx-border-width: 1px;	
+}
+.loginButton{
+	-fx-background-color: rgba(255, 255, 255, 0.2);
+	-fx-cursor: hand;
+}
+.loginButton:hover, .loginButton:focused {
+	-fx-background-color: rgba(255, 255, 255, 0.5);	
+}
+
+
+
+.widthLeftPanel{	
+	-fx-min-width: width-left-main-panel;
+	-fx-max-width: width-left-main-panel;
+}
+#menuMainPanel{	
+	-fx-background-color: gray;	
+}
+
+.menuButton, .topBarButton{
+	-fx-background-color: TRANSPARENT;
+	-fx-border-color: white;
+	-fx-cursor: hand;	
+}
+.menuButton:hover, topBarButton:hover{
+	-fx-background-color: rgba(255, 255, 255, 0.1);	
+}
+.menuOptionButton{
+	-fx-padding: 30px 20px;
+	-fx-alignment: top-left;
+	-fx-font-size: 20px;
+}
+
+.aditionalOptions{	
+	-fx-pref-width: 80px;
+	-fx-pref-height: 80px;	
+}
+
+
+.searchProductLabel{
+	-fx-margin: 10px 0 0 0;
+}
+.searchProductField{
+	-fx-margin: 10px 0 0 0;	
+}
+.createProductLabel{
+	-fx-pref-width: 120px;
+}
+
+
+
+
+
+.table-cell {     
+    -fx-padding: 0.5em 0.5em 0.1em 0.3em;
+    -fx-border-color: -fx-box-border -fx-box-border transparent transparent;  
+    -fx-font: 13px "Segoe UI";    
+    -fx-border-insets: 0;
+}
+
+.table-cell:hover {
+    -fx-background-color: #9900ff;
+}
+
+.table-row-cell:empty, .table-cell:empty:hover {
+    -fx-background-color: whitesmoke;
+}
+ 
+.table-row-cell:empty .table-cell {
+    -fx-border-width: 0px;
+}
+
+.table-view:row-selection .table-row-cell:filled:hover { 
+    -fx-background-color: rgba(28, 183, 236, 0.25);
+}
+
+.table-view:row-selection .table-row-cell:filled:selected:hover { 
+    -fx-background-color: rgba(228, 183, 236, 0.90);
+}
+
+.table-view:row-selection .table-row-cell:filled:selected { 
+    -fx-background-color: rgba(28, 183, 236, 0.65);
+}
+
+.table-view, .table-view:focused {
+  -fx-background-color: transparent,-fx-box-border,-fx-control-inner-background;
+  -fx-background-insets: -1.4, 0, 1;
+  -fx-background-radius: 1.4, 0, 0;
+}
+ 
+.table-view .column-header .label{
+    -fx-text-fill: #52677A;
+    -fx-alignment: CENTER;
+}
+
+.table-view .column-header:hover {
+    -fx-background-color: whitesmoke;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: white;    
+    -fx-size: 45;
+    -fx-border-color: -fx-box-border;
+    -fx-border-width: 0 1 3 0;
+    -fx-border-insets: 0;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .show-hide-columns-button {
+    -fx-background-color: white;
+    -fx-border-color: -fx-box-border;
+    -fx-border-insets: 0;
+}
+
+
+
+
+.tab-content-area {
+	-fx-background-color: white;
+	-fx-background-radius: 5 5 5 5;
+}
+.tab 
+{
+	-fx-background-color: rgba(255, 255, 255, 0.6);
+	-fx-pref-height: 20px;	
+}
+.tab:hover 
+{
+	-fx-background-color: rgba(255, 255, 255, 0.8);
+}
+.tab:selected 
+{
+	-fx-background-color: white;
+}
+.tab-pane *.tab-header-background 
+{
+-fx-background-color: TRANSPARENT;
+}
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-style: none;
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+}
+

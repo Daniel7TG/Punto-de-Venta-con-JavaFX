@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.CheckComboBox?>
+<?import org.controlsfx.control.RangeSlider?>
+<?import org.controlsfx.control.tableview2.TableView2?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../styles/Styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.point.controllers.MainController">
+   <center>
+      <AnchorPane prefWidth="710.0" BorderPane.alignment="CENTER">
+         <children>
+            <BorderPane fx:id="newProductPane" layoutX="-229.60000610351562" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-230.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <center>
+                  <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: green;">
+                     <children>
+                        <TableView2 fx:id="tableProducts" VBox.vgrow="ALWAYS">
+                           <columns>
+                              <TableColumn fx:id="idProductColumn" editable="false" prefWidth="30.0" text="Id" />
+                              <TableColumn fx:id="nombreProductColumn" editable="false" prefWidth="75.0" text="Nombre" />
+                              <TableColumn fx:id="precioProductColumn" editable="false" prefWidth="50.0" text="Precio" />
+                              <TableColumn fx:id="marcaProductColumn" editable="false" prefWidth="75.0" text="Marca" />
+                              <TableColumn fx:id="existenciasProductColumn" editable="false" prefWidth="40.0" text="Existencias" />
+                              <TableColumn fx:id="detallesProductColumn" editable="false" prefWidth="75.0" text="Detalles" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView2>
+                        <TabPane maxHeight="1.7976931348623157E308" prefWidth="870.0" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab fx:id="filterProdsButton" closable="false" text="Untitled Tab 1">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
+                                       <children>
+                                          <FlowPane fx:id="searchProductPane" columnHalignment="RIGHT" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" rowValignment="TOP" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="179.0" prefWidth="330.0">
+                                                   <children>
+                                                      <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="searchProductLabel" text="Filtrar por Nombre">
+                                                         <font>
+                                                            <Font size="20.0" />
+                                                         </font>
+                                                         <padding>
+                                                            <Insets left="20.0" />
+                                                         </padding>
+                                                      </Label>
+                                                      <CustomTextField fx:id="filterProdName" prefWidth="400.0" styleClass="searchProductField">
+                                                         <VBox.margin>
+                                                            <Insets left="10.0" />
+                                                         </VBox.margin></CustomTextField>
+                                                      <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="searchProductLabel" text="Filtrar por Marca">
+                                                         <font>
+                                                            <Font size="20.0" />
+                                                         </font>
+                                                         <padding>
+                                                            <Insets left="20.0" />
+                                                         </padding>
+                                                         <VBox.margin>
+                                                            <Insets top="10.0" />
+                                                         </VBox.margin>
+                                                      </Label>
+                                                      <CheckComboBox fx:id="filterProdBrand" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="263.0" styleClass="searchProductField">
+                                                         <VBox.margin>
+                                                            <Insets left="10.0" />
+                                                         </VBox.margin></CheckComboBox>
+                                                   </children>
+                                                   <padding>
+                                                      <Insets right="20.0" />
+                                                   </padding>
+                                                   <FlowPane.margin>
+                                                      <Insets />
+                                                   </FlowPane.margin>
+                                                </VBox>
+                                                <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="184.0" prefWidth="560.0">
+                                                   <children>
+                                                      <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="searchProductLabel" text="Rango de Precio">
+                                                         <font>
+                                                            <Font size="20.0" />
+                                                         </font>
+                                                         <padding>
+                                                            <Insets left="20.0" />
+                                                         </padding>
+                                                      </Label>
+                                                      <FlowPane alignment="CENTER" hgap="10.0" prefWidth="200.0" styleClass="searchProductField" VBox.vgrow="NEVER">
+                                                         <children>
+                                                            <Spinner fx:id="filterRangeLeft" prefHeight="26.0" prefWidth="80.0" />
+                                                            <RangeSlider fx:id="filterRangeBar" prefHeight="23.0" prefWidth="330.0" />
+                                                            <Spinner fx:id="filterRangeRight" prefHeight="26.0" prefWidth="80.0" />
+                                                         </children>
+                                                      </FlowPane>
+                                                   </children>
+                                                   <padding>
+                                                      <Insets right="20.0" />
+                                                   </padding>
+                                                </VBox>
+                                             </children>
+                                          </FlowPane>
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                            <Tab fx:id="createProdsButton" closable="false" text="Untitled Tab 2">
+                              <content>
+                                <AnchorPane maxHeight="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefWidth="200.0">
+                                       <children>
+                                          <FlowPane fx:id="createProductPane" orientation="VERTICAL" prefHeight="200.0" prefWidth="870.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="192.0" prefWidth="358.0" spacing="25.0">
+                                                   <children>
+                                                      <FlowPane prefHeight="31.0" prefWidth="532.0">
+                                                         <children>
+                                                            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="createProductLabel" text="Nombre">
+                                                               <font>
+                                                                  <Font size="20.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="20.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <CustomTextField fx:id="newProdName" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="215.0" styleClass="searchProductField" />
+                                                         </children>
+                                                      </FlowPane>
+                                                      <FlowPane>
+                                                         <children>
+                                                            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="createProductLabel" text="Marca">
+                                                               <font>
+                                                                  <Font size="20.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="20.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <CustomTextField fx:id="newProdBrandTxt" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="133.0" styleClass="searchProductField" />
+                                                            <ComboBox fx:id="newProdBrandCb" prefHeight="26.0" prefWidth="83.0" />
+                                                         </children>
+                                                      </FlowPane>
+                                                      <FlowPane>
+                                                         <children>
+                                                            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="createProductLabel" text="Precio">
+                                                               <font>
+                                                                  <Font size="20.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="20.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Spinner fx:id="newProdPrice" />
+                                                         </children>
+                                                      </FlowPane>
+                                                   </children>
+                                                   <padding>
+                                                      <Insets right="20.0" top="20.0" />
+                                                   </padding>
+                                                </VBox>
+                                                <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                                                   <children>
+                                                      <FlowPane alignment="CENTER_LEFT" hgap="25.0" maxHeight="1.7976931348623157E308" orientation="VERTICAL" prefHeight="178.0" prefWidth="510.0" vgap="10.0" HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="createProductLabel" text="Descripcion">
+                                                               <font>
+                                                                  <Font size="20.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <TextArea fx:id="newProdDetails" maxHeight="1.7976931348623157E308" prefHeight="93.0" prefWidth="298.0" wrapText="true" />
+                                                            <FlowPane prefWidth="298.0">
+                                                               <children>
+                                                                  <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="93.0" styleClass="createProductLabel" text="Cantidad">
+                                                                     <font>
+                                                                        <Font size="20.0" />
+                                                                     </font>
+                                                                     <padding>
+                                                                        <Insets left="20.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <Spinner fx:id="newProdQuantity" prefHeight="26.0" prefWidth="143.0" />
+                                                               </children>
+                                                            </FlowPane>
+                                                            <Button fx:id="newProdImage" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" onAction="#selectProdImage" text="Button">
+                                                               <graphic>
+                                                                  <ImageView fx:id="newProdView" fitHeight="150.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../img/default.jpg" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                               </graphic>
+                                                            </Button>
+                                                         </children>
+                                                      </FlowPane>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </FlowPane>
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                          </tabs>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </TabPane>
+                        <Button fx:id="confirmProdButton" mnemonicParsing="false" onAction="#confirmProduct" prefHeight="41.0" prefWidth="85.0" text="Confirmar" />
+                     </children>
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                  </VBox>
+               </center>
+               <right>
+                  <AnchorPane fx:id="productDetailsPane" prefHeight="200.0" prefWidth="300.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <VBox fx:id="selectedProduct" alignment="TOP_CENTER" disable="true" prefHeight="200.0" prefWidth="300.0" spacing="10.0" style="-fx-background-color: lightgray;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <ImageView fx:id="imgProductDetails" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                 <VBox.margin>
+                                    <Insets left="20.0" right="20.0" top="20.0" />
+                                 </VBox.margin>
+                              </ImageView>
+                              <Label text="Nombre" />
+                              <TextField fx:id="nameProductDetails" prefHeight="26.0" prefWidth="262.0">
+                                 <VBox.margin>
+                                    <Insets left="20.0" right="20.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <GridPane prefHeight="61.0" prefWidth="260.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="178.1999755859375" minWidth="10.0" prefWidth="176.6" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.19995117187503" minWidth="10.0" prefWidth="103.00000000000003" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="66.40002212524413" minHeight="10.0" prefHeight="26.000018310546878" vgrow="NEVER" />
+                                    <RowConstraints maxHeight="82.79998168945312" minHeight="10.0" prefHeight="36.39998168945313" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Precio" />
+                                    <Spinner fx:id="priceProductDetails" GridPane.rowIndex="1" />
+                                    <Label text="Existencias" GridPane.columnIndex="1" />
+                                    <Spinner fx:id="quantityProductDetails" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="20.0" right="20.0" />
+                                 </VBox.margin>
+                              </GridPane>
+                              <Label text="Marca" />
+                              <ComboBox fx:id="brandProductDetails" prefWidth="150.0" />
+                              <Label text="Descripción" />
+                              <TextArea fx:id="detailsProductDetails" prefHeight="158.0" prefWidth="260.0">
+                                 <VBox.margin>
+                                    <Insets left="20.0" right="20.0" />
+                                 </VBox.margin>
+                              </TextArea>
+                              <Button fx:id="changeProductButton" mnemonicParsing="false" onAction="#saveChangeButton" text="Guardar Cambios" />
+                           </children>
+                        </VBox>
+                        <Label fx:id="notSelectedProduct" alignment="CENTER" text="Selecciona un Producto de la Tabla para mostrar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+               </right>
+            </BorderPane>
+            <AnchorPane fx:id="newAdminPane" disable="true" layoutX="205.60000610351562" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="540.0" prefWidth="1030.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-230.0" AnchorPane.rightAnchor="-300.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label alignment="CENTER" layoutX="229.0" layoutY="62.0" maxHeight="50.0" prefHeight="50.0" text="Registrar Admin" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="newSalePane" disable="true" layoutX="463.20001220703125" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="540.0" prefWidth="1030.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-230.0" AnchorPane.rightAnchor="-300.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label alignment="CENTER" layoutX="229.0" layoutY="62.0" maxHeight="50.0" prefHeight="50.0" text="Registrar Productos" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="historyPane" disable="true" layoutX="721.5999755859375" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="540.0" prefWidth="1030.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-230.0" AnchorPane.rightAnchor="-300.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label alignment="CENTER" layoutX="229.0" layoutY="62.0" maxHeight="50.0" prefHeight="50.0" text="Historial" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+   </center>
+   <top>
+      <FlowPane fx:id="topPanel" alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="1.7976931348623157E308" minHeight="25.0" prefHeight="25.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" onAction="#minimizeApp" styleClass="topBarButton" text="-">
+               <font>
+                  <Font size="8.0" />
+               </font></Button>
+            <Button mnemonicParsing="false" onAction="#maximizeApp" styleClass="topBarButton" text="[]">
+               <font>
+                  <Font size="6.0" />
+               </font></Button>
+            <Button mnemonicParsing="false" onAction="#closeApp" styleClass="topBarButton" text="X">
+               <font>
+                  <Font size="9.0" />
+               </font></Button>
+         </children>
+      </FlowPane>
+   </top>
+   <left>
+      <AnchorPane prefHeight="200.0" prefWidth="69.0" translateX="-230.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox id="menuMainPanel" fx:id="menuPane" alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" prefWidth="300.0" styleClass="widthLeftPanel" stylesheets="@../styles/Styles.css" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <AnchorPane prefHeight="180.0" prefWidth="300.0">
+                     <children>
+                        <ImageView fitHeight="180.0" fitWidth="230.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="15.0">
+                           <viewport>
+                              <Rectangle2D width="230.0" />
+                           </viewport>
+                           <image>
+                              <Image url="@../img/GatoC.jpg" />
+                           </image>
+                        </ImageView>
+                        <Button fx:id="menuLeftMove" layoutX="189.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#contract" prefHeight="192.0" prefWidth="70.0" styleClass="menuButton" text="&lt;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <font>
+                              <Font name="ArtifaktElement-Heavy" size="30.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+                  <Button fx:id="newSaleButton" mnemonicParsing="false" onAction="#changeView" text="Nueva Venta">
+                     <styleClass>
+                        <String fx:value="menuOptionButton" />
+                        <String fx:value="menuButton" />
+                        <String fx:value="widthLeftPanel" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="newAdminButton" mnemonicParsing="false" onAction="#changeView" text="Registrar Admin">
+                     <styleClass>
+                        <String fx:value="menuOptionButton" />
+                        <String fx:value="menuButton" />
+                        <String fx:value="widthLeftPanel" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="newProductButton" mnemonicParsing="false" onAction="#changeView" prefWidth="227.0" text="Registrar Productos">
+                     <styleClass>
+                        <String fx:value="menuOptionButton" />
+                        <String fx:value="menuButton" />
+                        <String fx:value="widthLeftPanel" />
+                     </styleClass>
+                  </Button>
+                  <Button fx:id="historyButton" mnemonicParsing="false" onAction="#changeView" prefHeight="59.0" prefWidth="250.0" text="Historial">
+                     <styleClass>
+                        <String fx:value="menuOptionButton" />
+                        <String fx:value="menuButton" />
+                        <String fx:value="widthLeftPanel" />
+                     </styleClass>
+                  </Button>
+                  <HBox alignment="BOTTOM_LEFT" maxHeight="1.7976931348623157E308" styleClass="widthLeftPanel" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Button mnemonicParsing="false" text="Contacto">
+                           <styleClass>
+                              <String fx:value="aditionalOptions" />
+                              <String fx:value="menuButton" />
+                           </styleClass>
+                        </Button>
+                        <Button mnemonicParsing="false" text="Configuracion">
+                           <styleClass>
+                              <String fx:value="aditionalOptions" />
+                              <String fx:value="menuButton" />
+                           </styleClass>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </left>
+</BorderPane>
