@@ -82,40 +82,30 @@ public class Product {
 	}
 	
 	
-	public static void saveProduct(Product product) {
-		connect = Database.getConnect();
+	public static void saveProduct(Product product) {		
 		try {
-			statement = connect.prepareStatement("INSERT INTO product(name, price, brand, image, details, quantity) VALUES (?, ?, ?, ?, ?, ?)");
-			statement.setString(1, product.name);
-			statement.setDouble(2, product.price);
-			statement.setString(3, product.brand.isBlank() ? "" : product.brand);
-			statement.setString(4, product.imagen.isBlank() ? "img/default.jpg" : product.imagen);
-			statement.setString(5, product.details.isBlank() ? "sin detalles" : product.details);
-			statement.setInt(6, product.quantity);
+			if(product.id == 0) {
+				saveProduct(product, "INSERT INTO product(name, price, brand, image, details, quantity) VALUES (?, ?, ?, ?, ?, ?)");			
+			} else { 			
+				saveProduct(product, "UPDATE product SET name = ?, price = ?, brand = ?, image = ?, details = ?, quantity = ? WHERE id = ?");						
+				statement.setLong(7, product.id);
+			}
 			statement.executeUpdate();
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}		
-	}
-	
-	
-	public static void updateProduct(Product updatedProduct, Long id) {
-		connect = Database.getConnect();
-		try {
-			statement = connect.prepareStatement("UPDATE product SET name = ?, price = ?, brand = ?, image = ?, details = ?, quantity = ? WHERE id = ?");
-			statement.setString(1, updatedProduct.name);
-			statement.setDouble(2, updatedProduct.price);
-			statement.setString(3, updatedProduct.brand.isBlank() ? "" : updatedProduct.brand);
-			statement.setString(4, updatedProduct.imagen.isBlank() ? "img/default.jpg" : updatedProduct.imagen);
-			statement.setString(5, updatedProduct.details.isBlank() ? "sin detalles" : updatedProduct.details);
-			statement.setInt(6, updatedProduct.quantity);
-			statement.setLong(7, id);
-			statement.executeUpdate();
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
+	public static void saveProduct(Product product, String instruction) throws SQLException {
+		connect = Database.getConnect();
+		statement = connect.prepareStatement(instruction);
+		statement.setString(1, product.name);
+		statement.setDouble(2, product.price);
+		statement.setString(3, product.brand.isBlank() ? "" : product.brand);
+		statement.setString(4, product.imagen.isBlank() ? "img/default.jpg" : product.imagen);
+		statement.setString(5, product.details.isBlank() ? "sin detalles" : product.details);
+		statement.setInt(6, product.quantity);
+	}
 
 	public Long getId() {
 		return id;

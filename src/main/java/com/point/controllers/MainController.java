@@ -3,9 +3,12 @@ package com.point.controllers;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -13,6 +16,8 @@ import java.util.UUID;
 import org.controlsfx.control.tableview2.TableView2;
 import org.controlsfx.control.textfield.CustomTextField;
 
+import com.point.IndexApp;
+import com.point.Util;
 import com.point.interfaces.DraggedScene;
 import com.point.models.Brand;
 import com.point.models.Product;
@@ -31,6 +36,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -53,13 +59,6 @@ import javafx.stage.Stage;
 public class MainController implements DraggedScene, Initializable{
 
 	@FXML
-	Button menuLeftMove,
-	newSaleButton, newAdminButton, newProductButton, historyButton,
-	changeProductButton,
-	newProdImage,
-	confirmProdButton,
-	newProdImgButton, detailsProdImgButton;
-	@FXML
 	VBox menuPane, appPanel,
 	selectedProduct;
 	@FXML
@@ -67,13 +66,11 @@ public class MainController implements DraggedScene, Initializable{
 	searchProductPane, createProductPane;
 	@FXML
 	AnchorPane newAdminPane, newSalePane, historyPane, productDetailsPane;
-//	@FXML
-//	ToggleGroup productActions;
-//	@FXML 
-//	ToggleButton filterProdsButton, createProdsButton;
 	@FXML 
 	BorderPane newProductPane;
-
+	@FXML 
+	Tab filterProdTab, createProdTab;
+	
 	@FXML 
 	TableView2<Product> tableProducts;
 	@FXML 
@@ -83,13 +80,18 @@ public class MainController implements DraggedScene, Initializable{
 	@FXML 
 	TableColumn<Product, Double> precioProductColumn;
 	
+	@FXML
+	Button menuLeftMove,
+	newSaleButton, newAdminButton, newProductButton, historyButton,
+	changeProductButton,
+	newProdImage,
+	confirmProdButton,
+	newProdImgButton, detailsProdImgButton;	
 	@FXML 
 	Label notSelectedProduct;
 	@FXML 
 	ImageView imgProductDetails,
 	newProdView;
-	@FXML 
-	TextField nameProductDetails;
 	@FXML 
 	Spinner<Integer> quantityProductDetails,
 	newProdQuantity;
@@ -103,12 +105,8 @@ public class MainController implements DraggedScene, Initializable{
 	TextArea detailsProductDetails,
 	newProdDetails;
 	@FXML 
-	CustomTextField newProdName, newProdBrandTxt;
+	CustomTextField nameProductDetails, newProdName, newProdBrandTxt, brandProductDetailsTxt;
 	
-	SpinnerValueFactory<Double> priceSpinner;
-	SpinnerValueFactory<Integer> quantitySpinner;
-	SpinnerValueFactory<Double> newPriceSpinner;
-	SpinnerValueFactory<Integer> newQuantitySpinner;
 	
 	private Stage stage;
 	boolean oppened = false;
@@ -118,94 +116,155 @@ public class MainController implements DraggedScene, Initializable{
 	WIDTH_VISIBLE_BUTTONS_PANEL = 70,
 	WIDTH_PANEL_MOVEMENT = WIDTH_MAIN_PANEL - WIDTH_VISIBLE_BUTTONS_PANEL;
 	
-	private final Image DEFAULT_IMAGE = new Image("img/default.jpg");
-	private final String IMAGE_PATH = System.getProperty("user.dir") + "/src/main/resources/img";
-	private final FileChooser fileChooser = new FileChooser();
+	
+	// path para dev
+//	private final Path IMAGE_PATH = Paths.get(System.getProperty("user.dir") + "/src/main/resources/img");
+	
+
+	// Products Panel
+	// path para prod
+	private final String DEFAULT_IMAGE = MainController.class.getResource("/img/default.jpg").toString(); 
+	
+	private final Path IMAGE_PATH = Paths.get("img");
+
+	private SpinnerValueFactory<Double> priceSpinner, newPriceSpinner;
+	private SpinnerValueFactory<Integer> quantitySpinner, newQuantitySpinner;
+	private final FileChooser fileChooser = new FileChooser();	
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		onDraggedScene(topPanel);
-
+		
+		if (!Files.exists(IMAGE_PATH)) {
+            try {
+				Files.createDirectories(IMAGE_PATH);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+        
 		fileChooser.getExtensionFilters().add(new ExtensionFilter("IMG files (*.jpg)", "*.jpg", "*.png"));
 		
 		initializeProducts();	
 		
-
 	}
 	
-		
+	
+	
+	
+	
+	// actualiza el producto, borra la imagen, crea la marca
 	public void saveChangeButton() {
 		Product product = tableProducts.getSelectionModel().getSelectedItem();
-		Long id = product.getId();
-		
-		Product updatedProduct = new Product(
-			id,
-			nameProductDetails.getText(),
-			priceSpinner.getValue(),
-			brandProductDetails.getSelectionModel().getSelectedItem(),
-			imgProductDetails.getImage().getUrl(),
-			detailsProductDetails.getText(),
-			quantitySpinner.getValue()
-				);
-		
-		Product.updateProduct(updatedProduct, id);
-		updateTableProducts();
-		tableProducts.getSelectionModel().select(updatedProduct);
-	}
-	
-	
-	// Cambia la imagen 
-	public void selectProdImage(ActionEvent event) {
-		String uniqueID;
-		Path destinationPath;
-		Image image;		
-		ImageView view = event.getSource().equals(detailsProdImgButton) ? imgProductDetails : newProdView;
-		
-		File selectedFile = fileChooser.showOpenDialog(stage);
-		if (selectedFile != null) {
-			try {
-				// Crea la ruta con el nuevo nombre de imagen
-				uniqueID = UUID.randomUUID().toString();
-				destinationPath = Path.of( IMAGE_PATH, uniqueID + ".jpg");
-
-				// Si no es la imagen por default
-				if (!view.getImage().getUrl().equals(DEFAULT_IMAGE.getUrl())) {
-					String[] array = view.getImage().getUrl().split("/");
-					String name = array[array.length-1];
-					Files.deleteIfExists( Path.of(IMAGE_PATH, name) );
-				}
-				
-				Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.COPY_ATTRIBUTES);
-				image = new Image(destinationPath.toUri().toString());
-				view.setImage(image);
-				
-			} catch (IOException e) {
-				e.printStackTrace();
+		String image = product.getImagen();
+		try {
+			if(!product.getImagen().equals(DEFAULT_IMAGE) && !imgProductDetails.getImage().getUrl().equals(product.getImagen())) {				
+				Files.deleteIfExists( Util.getPath(image));
+				image = saveImage(imgProductDetails);
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-
+		saveProduct(product.getId(), nameProductDetails, priceSpinner, brandProductDetailsTxt, image, detailsProductDetails, quantitySpinner);
+//		if(!Brand.existBrand(brandProductDetailsTxt.getText())) {
+//			Brand.createBrand(brandProductDetailsTxt.getText());
+//		}
+//
+//		Product updatedProduct = new Product(
+//			product.getId(),
+//			nameProductDetails.getText(),
+//			priceSpinner.getValue(),
+//			brandProductDetailsTxt.getText(),
+//			image,
+//			detailsProductDetails.getText(),
+//			quantitySpinner.getValue()
+//			);
+//		Product.saveProduct(updatedProduct);
+//		updateTableProducts();
+//		updateComboBoxes();
+//		tableProducts.getSelectionModel().select(updatedProduct);
 	}
-
 	
-	// Guarda un producto con los datos registrados
-	public void confirmProduct() {
-		if(!Brand.existBrand(newProdBrandTxt.getText())) {
-			Brand.createBrand(newProdBrandTxt.getText());
+	
+	// Guarda un producto con los datos registrados, crea la marca
+	public void confirmProduct() {	
+		
+		if(filterProdTab.isSelected()) {
+			
+		} else { 
+			String image = saveImage(newProdView);
+			saveProduct(0L, newProdName, newPriceSpinner, newProdBrandTxt, image, newProdDetails, newQuantitySpinner);
 		}
+		
+//		String image = saveImage(newProdView);
+//		
+//		if(!Brand.existBrand(newProdBrandTxt.getText())) Brand.createBrand(newProdBrandTxt.getText());
+//		
+//		Product product = new Product(
+//				0L,
+//				newProdName.getText(),
+//				newPriceSpinner.getValue(),
+//				newProdBrandTxt.getText(),
+//				image,
+//				newProdDetails.getText(),
+//				newQuantitySpinner.getValue()
+//		);
+//		
+//		Product.saveProduct(product);
+//		updateTableProducts();
+//		updateComboBoxes();
+//		tableProducts.getSelectionModel().select(product);
+	}
+	
+	private void saveProduct(Long id, CustomTextField name, SpinnerValueFactory<Double> price, CustomTextField brand, String image, TextArea details, SpinnerValueFactory<Integer> quantity) {
+		if(!Brand.existBrand(brand.getText())) Brand.createBrand(brand.getText());
+
 		Product product = new Product(
-				0L,
-				newProdName.getText(),
-				newPriceSpinner.getValue(),
-				newProdBrandTxt.getText(),
-				newProdView.getImage().getUrl() != null ? newProdView.getImage().getUrl() : "",
-				newProdDetails.getText(),
-				newQuantitySpinner.getValue()
-				);
+				id,
+				name.getText(),
+				price.getValue(),
+				brand.getText(),
+				image,
+				details.getText(),
+				quantity.getValue()
+		);
+		
 		Product.saveProduct(product);
 		updateTableProducts();
 		updateComboBoxes();
 		tableProducts.getSelectionModel().select(product);
 	}
+	
+	// copia la imagen hasta una la carpeta /img, si no es la default genera uniqueID 
+	private String saveImage(ImageView view) {
+
+		String uniqueID;
+		Path destinationPath;
+		
+		if(view.getImage().getUrl().equals(DEFAULT_IMAGE)) return DEFAULT_IMAGE;
+	
+		uniqueID = UUID.randomUUID().toString();
+		destinationPath = IMAGE_PATH.resolve(uniqueID + ".jpg");
+		try {
+			Files.copy( Util.getPath(view.getImage().getUrl()) , destinationPath, StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return Util.pathToImage(destinationPath.toString());
+	}
+	
+	
+	// solo cambia la imagen del view 
+	public void selectProdImage(ActionEvent event) {
+		Image image;		
+		ImageView view = event.getSource().equals(detailsProdImgButton) ? imgProductDetails : newProdView;
+		File selectedFile = fileChooser.showOpenDialog(stage);
+		if (selectedFile != null) {
+			image = new Image(selectedFile.toURI().toString());
+			view.setImage(image);
+		}
+	}
+
 	
 	// Acciones de la barra superior
 	public void maximizeApp() {
@@ -314,6 +373,7 @@ public class MainController implements DraggedScene, Initializable{
 		    }	
 			if (product != null) {
 				Image image = new Image(product.getImagen());	
+				System.out.println(image.getUrl());
 		    	imgProductDetails.setImage(image);
 		    	nameProductDetails.setText(product.getName());
 		    	quantitySpinner.setValue(product.getQuantity());
@@ -329,6 +389,12 @@ public class MainController implements DraggedScene, Initializable{
 		});
 		newProdBrandTxt.textProperty().addListener( (event)->{
 			newProdBrandCb.valueProperty().set(newProdBrandTxt.getText());
+		});		
+		brandProductDetails.getSelectionModel().selectedItemProperty().addListener( (obs, oldSelection, newSelection) ->{
+			brandProductDetailsTxt.setText(newSelection);
+		});
+		brandProductDetailsTxt.textProperty().addListener( (event)->{
+			brandProductDetails.valueProperty().set(brandProductDetailsTxt.getText());
 		});
 		
 		updateTableProducts();

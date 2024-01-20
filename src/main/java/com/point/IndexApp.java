@@ -41,9 +41,9 @@ public class IndexApp extends Application {
     }
 
     
-    private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(IndexApp.class.getResource("../../fxml/"+fxml + ".fxml"));
-        return fxmlLoader.load();
+    private static Parent loadFXML(String fxml) throws IOException  {
+    	FXMLLoader fxmlLoader = new FXMLLoader(IndexApp.class.getClassLoader().getResource("fxml/" + fxml + ".fxml"));
+		return fxmlLoader.load();
     }
 
     

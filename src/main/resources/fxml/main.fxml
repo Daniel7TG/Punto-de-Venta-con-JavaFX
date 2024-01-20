@@ -12,7 +12,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -53,7 +52,7 @@
                         </TableView2>
                         <TabPane maxHeight="220.0" minHeight="220.0" minWidth="870.0" prefHeight="220.0" prefWidth="870.0" tabClosingPolicy="UNAVAILABLE">
                           <tabs>
-                            <Tab fx:id="filterProdsButton" closable="false" text="Untitled Tab 1">
+                            <Tab fx:id="filterProdTab" closable="false" text="Untitled Tab 1">
                                  <content>
                                     <VBox>
                                        <children>
@@ -103,7 +102,7 @@
                                        </children>
                                     </VBox>
                                  </content></Tab>
-                            <Tab fx:id="createProdsButton" closable="false" text="Untitled Tab 2">
+                            <Tab fx:id="createProdTab" closable="false" text="Untitled Tab 2">
                                  <content>
                                     <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                                        <children>
@@ -209,20 +208,20 @@
                <right>
                   <AnchorPane fx:id="productDetailsPane" prefHeight="200.0" prefWidth="300.0" BorderPane.alignment="CENTER">
                      <children>
-                        <VBox fx:id="selectedProduct" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="300.0" spacing="10.0" style="-fx-background-color: lightgray;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox fx:id="selectedProduct" alignment="TOP_CENTER" disable="true" prefHeight="200.0" prefWidth="300.0" spacing="10.0" style="-fx-background-color: lightgray;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                              <AnchorPane maxHeight="200.0" minHeight="200.0" prefHeight="200.0" prefWidth="200.0">
                                  <children>
                                     <ImageView fx:id="imgProductDetails" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="0.0" />
                                     <Button fx:id="detailsProdImgButton" mnemonicParsing="false" onAction="#selectProdImage" text="Cambiar imagen" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="50.0" />
                                  </children>
                               </AnchorPane>
                               <Label text="Nombre" />
-                              <TextField fx:id="nameProductDetails" prefHeight="26.0" prefWidth="262.0">
+                              <CustomTextField fx:id="nameProductDetails" prefHeight="26.0" prefWidth="262.0">
                                  <VBox.margin>
                                     <Insets left="20.0" right="20.0" />
                                  </VBox.margin>
-                              </TextField>
+                              </CustomTextField>
                               <GridPane prefHeight="61.0" prefWidth="260.0">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="178.1999755859375" minWidth="10.0" prefWidth="176.6" />
@@ -242,18 +241,40 @@
                                     <Insets left="20.0" right="20.0" />
                                  </VBox.margin>
                               </GridPane>
-                              <Label text="Marca" />
-                              <ComboBox fx:id="brandProductDetails" prefWidth="150.0" />
+                              <GridPane prefHeight="62.0" prefWidth="242.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="178.1999755859375" minWidth="10.0" prefWidth="176.6" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.19995117187503" minWidth="10.0" prefWidth="103.00000000000003" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="66.40002212524413" minHeight="10.0" prefHeight="26.000018310546878" vgrow="NEVER" />
+                                    <RowConstraints maxHeight="82.79998168945312" minHeight="10.0" prefHeight="36.39998168945313" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Marca" />
+                                    <ComboBox fx:id="brandProductDetails" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <CustomTextField fx:id="brandProductDetailsTxt" prefHeight="26.0" styleClass="searchProductField" GridPane.rowIndex="1" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="20.0" right="20.0" />
+                                 </VBox.margin>
+                              </GridPane>
                               <Label text="Descripción" />
-                              <TextArea fx:id="detailsProductDetails" prefHeight="158.0" prefWidth="260.0">
+                              <TextArea fx:id="detailsProductDetails" minWidth="190.0" prefWidth="260.0" VBox.vgrow="ALWAYS">
                                  <VBox.margin>
                                     <Insets left="20.0" right="20.0" />
                                  </VBox.margin>
                               </TextArea>
-                              <Button fx:id="changeProductButton" mnemonicParsing="false" onAction="#saveChangeButton" text="Guardar Cambios" />
+                              <Button fx:id="changeProductButton" mnemonicParsing="false" onAction="#saveChangeButton" text="Guardar Cambios">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" />
+                                 </VBox.margin></Button>
                            </children>
+                           <padding>
+                              <Insets top="10.0" />
+                           </padding>
                         </VBox>
-                        <Label fx:id="notSelectedProduct" alignment="CENTER" disable="true" text="Selecciona un Producto de la Tabla para mostrar" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <Label fx:id="notSelectedProduct" alignment="CENTER" text="Selecciona un Producto de la Tabla para mostrar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                </right>
