@@ -82,6 +82,72 @@ public class Product {
 	}
 	
 	
+	public static ObservableList<Product> getFilteredProducts(String name, Double min, Double max, ObservableList<String> brandList) {
+		
+		connect = Database.getConnect();
+		ObservableList<Product> list = FXCollections.observableArrayList();
+		String instruction = "SELECT * FROM product WHERE name LIKE ? AND price BETWEEN ? AND ?";
+		try {
+			
+			if(!brandList.isEmpty()) {
+				instruction += " AND brand IN (?";
+				for(int i = 0; i < brandList.size()-1; i++) {
+					instruction += ",?";
+				}
+				instruction += ")";
+			}
+			statement = connect.prepareStatement(instruction);
+			statement.setString(1, "%" + name + "%");
+			statement.setDouble(2, min);
+			statement.setDouble(3, max);
+			
+			for(int i = 0; i < brandList.size(); i++) {
+				statement.setString( i+4, brandList.get(i));
+			}
+			result = statement.executeQuery();			
+			
+			while(result.next()) {
+				Product producto = new Product(
+						result.getLong("id"),
+						result.getString("name"),
+						result.getDouble("price"),
+						result.getString("brand"),
+						result.getString("image"),
+						result.getString("details"),
+						result.getInt("quantity")
+						);
+				list.add(producto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
+	public static Double[] getPricesRange() {
+		connect = Database.getConnect();
+		Double prices[] = new Double[2];
+		
+		try {
+		    statement = connect.prepareStatement("SELECT MAX(price) FROM product");
+		    result = statement.executeQuery();
+		    if (result.next()) {
+		        prices[1] = result.getDouble(1); 
+		    }
+		    statement = connect.prepareStatement("SELECT MIN(price) FROM product");
+		    result = statement.executeQuery();
+		    if (result.next()) {
+		        prices[0] = result.getDouble(1); 
+		    }			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return prices;
+		
+	}
+	
+	
 	public static void saveProduct(Product product) {		
 		try {
 			if(product.id == 0) {
