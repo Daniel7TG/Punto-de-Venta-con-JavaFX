@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
@@ -25,6 +26,7 @@ import com.point.interfaces.DraggedScene;
 import com.point.models.Brand;
 import com.point.models.Product;
 
+import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.beans.Observable;
@@ -37,6 +39,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -51,31 +54,49 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.BoxBlur;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.scene.transform.Translate;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class MainController implements DraggedScene, Initializable{
 
 	@FXML
-	VBox menuPane, appPanel,
+	Pane blurPanel;
+	@FXML
+	VBox menuPane,
 	selectedProduct;
 	@FXML
 	FlowPane topPanel,
 	searchProductPane, createProductPane;
 	@FXML
-	AnchorPane newAdminPane, newSalePane, historyPane, productDetailsPane;
+	AnchorPane newAdminPane, newSalePane, historyPane, productDetailsPane,
+	mainContainer, menuPaneAnchor, contentMain;
 	@FXML 
-	BorderPane newProductPane;
+	BorderPane appPane,
+	newProductPane;
 	@FXML 
 	Tab filterProdTab, createProdTab;
 
@@ -121,17 +142,16 @@ public class MainController implements DraggedScene, Initializable{
 
 
 	private Stage stage;
-	boolean oppened = false;
-
+	private boolean oppened = false;
+	
 	private final float 
 	WIDTH_MAIN_PANEL = 300,
 	WIDTH_VISIBLE_BUTTONS_PANEL = 70,
 	WIDTH_PANEL_MOVEMENT = WIDTH_MAIN_PANEL - WIDTH_VISIBLE_BUTTONS_PANEL;
-
-
-	// path para dev
-	//	private final Path IMAGE_PATH = Paths.get(System.getProperty("user.dir") + "/src/main/resources/img");
-
+	private final Color[]
+	SUCCESS = {Color.web("a2e0c4", 0.9), Color.web("#006134")},
+	ALERT = {Color.web("ffdb99", 0.9), Color.web("#d4b611")},
+	ERROR = {Color.web("d46e73", 0.9), Color.web("#a1131a")};
 
 	// Products Panel
 	private final String DEFAULT_IMAGE = MainController.class.getResource("/img/default.jpg").toString(); 
@@ -142,10 +162,10 @@ public class MainController implements DraggedScene, Initializable{
 	private SpinnerValueFactory<Integer> quantitySpinner, newQuantitySpinner;
 	private final FileChooser fileChooser = new FileChooser();	
 
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		onDraggedScene(topPanel);
-
+		onDraggedScene(topPanel);		
 		if (!Files.exists(IMAGE_PATH)) {
 			try {
 				Files.createDirectories(IMAGE_PATH);
@@ -160,27 +180,52 @@ public class MainController implements DraggedScene, Initializable{
 
 	}
 
+	public void summonAlert(String msj, Color[] colors, int amount) {
+		Label alert = new Label(msj);
+		alert.setBorder(new Border(
+			new BorderStroke( 
+				Color.TRANSPARENT,
+	            BorderStrokeStyle.SOLID,
+	            new CornerRadii(10),
+	            BorderStroke.DEFAULT_WIDTHS)
+			));
+		alert.setBackground(new Background(new BackgroundFill( colors[0], new CornerRadii(10), Insets.EMPTY))); 
+		alert.setTextFill(colors[1]);
+		alert.setLayoutX(85 - 300);
+		alert.setLayoutY(30 + (60 * amount));
+		alert.setPadding(new Insets(10));
+		alert.setPrefWidth(300);
+		alert.setPrefHeight(50);
+		contentMain.getChildren().add(alert);
+		menuPaneAnchor.toFront();
+		
+		FadeTransition ft = new FadeTransition(Duration.millis(2000), alert);
+		ft.setDelay(Duration.millis(5000));
+		ft.setFromValue(1.0);
+		ft.setToValue(0);
+		ft.setOnFinished(e -> {
+			contentMain.getChildren().remove(alert);
+		});
+		ft.play();
 
-
-
+	}
+	
+	
 	// Guarda un producto con los datos registrados
 	public void confirmProduct() {	
-
-		if(filterProdTab.isSelected()) {
-
+		if(filterProdTab.isSelected()) 
 			searchProducts();
-
-		} else { 
+		else { 
 			String image = saveImage(newProdView);
-			saveProduct(0L, newProdName, newPriceSpinner, newProdBrandTxt, image, newProdDetails, newQuantitySpinner);
+			if(validateNewProd()) {
+				summonAlert("Producto guardado Correctamente", SUCCESS, 0);
+				saveProduct(0L, newProdName, newPriceSpinner, newProdBrandTxt, image, newProdDetails, newQuantitySpinner);
+				clearCreateNew();				
+			}
 		}
 	}
 	
 	public void searchProducts(){
-			
-		// name puede ser ""
-		// price puede ser MIN a MAX
-		// brand puede ser todas
 		tableProducts.getSelectionModel().clearSelection();
 		notSelectedProduct.setVisible(true);
 		selectedProduct.setVisible(false);
@@ -189,17 +234,15 @@ public class MainController implements DraggedScene, Initializable{
 		Double min = filterRangeBar.getLowValue();
 		Double max = filterRangeBar.getHighValue();
 		ObservableList<String> listBrand = filterProdBrand.checkModelProperty().get().getCheckedItems();
-		
 		ObservableList<Product> loadedProducts = Product.getFilteredProducts(name, min, max, listBrand);
-
 		tableProducts.setItems(loadedProducts);			
-		
 	}
+	
+	
 	public void clearFilters() {
 		filterProdName.setText("");
 		leftFilterSpinner.setValue(filterRangeBar.getMin());
 		rightFilterSpinner.setValue(filterRangeBar.getMax());
-		
 		filterRangeBar.setHighValue(filterRangeBar.getMax());
 		filterRangeBar.setLowValue(filterRangeBar.getMin());
 		filterProdBrand.getCheckModel().clearChecks();
@@ -329,6 +372,7 @@ public class MainController implements DraggedScene, Initializable{
 			transition.setByX(WIDTH_PANEL_MOVEMENT);
 		}
 		transition.setNode(menuPane);
+		
 		transition.setOnFinished(e -> {
 			menuLeftMove.setDisable(false);
 		});		
@@ -356,6 +400,7 @@ public class MainController implements DraggedScene, Initializable{
 
 
 	// Panel Productos 
+
 	// Inicializa todos los recursos para el panel de Productos
 	public void initializeProducts() {
 		// Columnas de la tabla Productos
@@ -387,8 +432,8 @@ public class MainController implements DraggedScene, Initializable{
 		// Spinners de productos
 		priceSpinner = new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 1000000);
 		quantitySpinner = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000000);
-		newPriceSpinner = new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 1000000);
-		newQuantitySpinner = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000000);
+		newPriceSpinner = new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 1000000, 10);
+		newQuantitySpinner = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000000, 10);
 		
 		quantityProductDetails.setValueFactory(quantitySpinner);
 		priceProductDetails.setValueFactory(priceSpinner);
@@ -410,7 +455,15 @@ public class MainController implements DraggedScene, Initializable{
 		});
 		
 		
-		// spinner de filtro
+		Util.fixIntSpinner(newProdQuantity);
+		Util.fixDoubleSpinner(newProdPrice);
+		Util.fixIntSpinner(quantityProductDetails);
+		Util.fixDoubleSpinner(priceProductDetails);
+		
+		Util.fixDoubleSpinner(filterRangeLeft);
+		Util.fixDoubleSpinner(filterRangeRight);
+		
+		// spinner de filtro		
 		updateFilterRange();
 		
 
@@ -418,20 +471,58 @@ public class MainController implements DraggedScene, Initializable{
 		updateTableProducts();
 		updateComboBoxes();		
 	}
+	
+	private boolean validateNewProd() {
+		
+		ArrayList<String> errores = new ArrayList<String>();
+		if(newProdName.getText().isBlank()) {
+			errores.add("El nombre no debe estar vacio");
+			Util.errorHighlight(newProdName);
+		}
+		if(newPriceSpinner.getValue() == 0) {
+			errores.add("El precio debe ser mayor a 0");
+			Util.errorHighlight(newProdPrice);
+		}
+		if(newQuantitySpinner.getValue() == 0) {
+			errores.add("La cantidad debe ser mayor a 0");
+			Util.errorHighlight(newProdQuantity);
+		}
+		if(newProdBrandTxt.getText().isBlank()) {
+			errores.add("El nombre de la marca no debe estar vacio");
+			Util.errorHighlight(newProdBrandTxt);
+		}
+		
+		for(int i = 0; i < errores.size(); i++) {
+			summonAlert(errores.get(i), ERROR, i);
+		}
+	
+
+		
+		return errores.isEmpty();
+	}
+	
+	private void clearCreateNew() {
+		newProdName.setText("");
+		newPriceSpinner.setValue(0.0);
+		newProdBrandTxt.setText("");
+		newProdView.setImage(new Image(DEFAULT_IMAGE)); 
+		newProdDetails.setText("");
+		newQuantitySpinner.setValue(0);
+	}
 	// Actualiza los datos de la tabla desde la db
-	public void updateTableProducts() {
+	private void updateTableProducts() {
 		ObservableList<Product> loadedProducts = Product.getAllProducts();
 		tableProducts.setItems(loadedProducts);
 	}
 	// Actualiza los datos de las marcas desde la db
-	public void updateComboBoxes() {
+	private void updateComboBoxes() {
 		ObservableList<String> list = Brand.getAllBrands();
 		filterProdBrand.getItems().clear();
 		filterProdBrand.getItems().addAll(list);
 		newProdBrandCb.setItems(list);
 		brandProductDetails.setItems(list);
 	}
-	public void updateFilterRange() {
+	private void updateFilterRange() {
 		Double[] prices = Product.getPricesRange();
 		Double min = prices[0];
 		Double max = prices[1];
@@ -441,6 +532,8 @@ public class MainController implements DraggedScene, Initializable{
 		filterRangeRight.setValueFactory(rightFilterSpinner);
 		filterRangeBar.setMax(max);
 		filterRangeBar.setMin(min);
+		filterRangeBar.setHighValue(max);
+		filterRangeBar.setLowValue(min);
 		
 		leftFilterSpinner.valueProperty().addListener((Observable o) -> {
 			filterRangeBar.setLowValue((double) leftFilterSpinner.getValue());

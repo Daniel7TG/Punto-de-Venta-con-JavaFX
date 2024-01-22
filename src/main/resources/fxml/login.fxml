@@ -10,36 +10,36 @@
 
 <AnchorPane id="loginPane" fx:id="loginPane" maxHeight="500.0" maxWidth="820.0" minHeight="500.0" minWidth="820.0" prefHeight="500.0" prefWidth="820.0" stylesheets="@../styles/Styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.point.controllers.LoginController">
     <children>
-      <TextField fx:id="loginUsername" layoutX="466.0" layoutY="215.0" prefHeight="35.0" prefWidth="340.0" styleClass="loginTextField" />
-      <PasswordField fx:id="loginPassword" layoutX="466.0" layoutY="276.0" prefHeight="35.0" prefWidth="340.0" styleClass="loginTextField" />
-        <Button fx:id="loginButton" layoutX="285.0" layoutY="369.0" onAction="#login" prefHeight="130.0" prefWidth="535.0" styleClass="loginButton" text="Enviar">
+      <TextField fx:id="loginUsername" layoutX="461.0" layoutY="225.0" prefHeight="35.0" prefWidth="340.0" styleClass="loginTextField" />
+      <PasswordField fx:id="loginPassword" layoutX="461.0" layoutY="291.0" prefHeight="35.0" prefWidth="340.0" styleClass="loginTextField" />
+        <Button id="loginButton" fx:id="loginButton" layoutX="373.0" layoutY="385.0" onAction="#login" prefHeight="82.0" prefWidth="358.0" text="Enviar">
          <font>
             <Font size="25.0" />
          </font></Button>
-      <AnchorPane id="loginLeftPane" layoutX="-5.0" layoutY="-31.0" maxHeight="549.0" maxWidth="366.0" minHeight="500.0" minWidth="285.0" prefHeight="549.0" prefWidth="290.0">
-         <children>
-            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="45.0" layoutY="81.0" pickOnBounds="true" preserveRatio="true" />
-         </children>
-      </AnchorPane>
-      <Label layoutX="363.0" layoutY="217.0" text="Usuario">
+      <Label alignment="CENTER_RIGHT" layoutX="305.0" layoutY="225.0" prefHeight="32.0" prefWidth="150.0" styleClass="loginLabel" text="Usuario">
          <font>
             <Font name="Arial" size="28.0" />
          </font>
       </Label>
-      <Label layoutX="321.0" layoutY="278.0" text="Contraseña">
+      <Label alignment="CENTER_RIGHT" layoutX="305.0" layoutY="291.0" prefHeight="40.0" prefWidth="150.0" text="Contraseña">
          <font>
             <Font name="Arial" size="28.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutX="285.0" layoutY="7.0" prefHeight="94.0" prefWidth="535.0" text="Iniciar Sesion" textAlignment="CENTER">
+      <Label alignment="CENTER" layoutX="285.0" layoutY="7.0" prefHeight="94.0" prefWidth="535.0" styleClass="loginLabel" text="Iniciar Sesion" textAlignment="CENTER">
          <font>
             <Font name="Arial Bold" size="55.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutX="285.0" layoutY="131.0" prefHeight="24.0" prefWidth="535.0" text="Bienvenido!">
+      <Label alignment="CENTER" layoutX="285.0" layoutY="131.0" prefHeight="24.0" prefWidth="535.0" styleClass="loginLabel" text="Bienvenido!">
          <font>
             <Font name="Arial" size="30.0" />
          </font>
       </Label>
+      <AnchorPane id="loginLeftPane" fx:id="leftPane" maxHeight="539.0" maxWidth="290.0" minHeight="500.0" minWidth="290.0" prefHeight="500.0" prefWidth="290.0">
+         <children>
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="45.0" layoutY="81.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </AnchorPane>
     </children>
 </AnchorPane>

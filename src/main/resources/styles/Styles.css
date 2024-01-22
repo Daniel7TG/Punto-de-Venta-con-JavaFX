@@ -1,5 +1,7 @@
 * {
-   width-left-main-panel: 300px;
+	width-left-main-panel: 300px;
+
+	
 }
 
 .topBarButton{
@@ -7,46 +9,59 @@
 	-fx-pref-height: 25px;		
 	-fx-border-color: TRANSPARENT;
 }
+.alert {
+	-fx-border-radiud: 10;
+}
 
-#loginPane {
-	-fx-background: radial-gradient(center 50% 50%, radius 100%, rgb(237,203,155), rgb(195,159,108));
+
+#loginPane, #loginPane *{
+    -fx-background: linear-gradient(from 100% 100% to 0% 0%, rgba(108, 95, 200), rgba(48, 30, 109));	
+    -fx-font-family: 'Montserrat', 'sans-serif';
+	
 }
 #loginPane .label {
-    -fx-text-fill: black; /* Ajusta el color según tus preferencias */
+    -fx-text-fill: white; 
 }
-
 #loginLeftPane{
 	-fx-background-color: rgba(0, 0, 0, 0.5);
-	-fx-border-width: 5px;
+	-fx-border-width: 5px 5px 5px 0;	
 	-fx-border-color: white;
+	-fx-border-radius: 0 50% 50% 0px;
+	-fx-background-radius: 0 50% 50% 0px ;
+	-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 60, 0.3, 15.0, 0.0);
 }
 .loginTextField{
 	-fx-background-color: rgba(0, 0, 0, 0.2);
 	-fx-border-color: white;
-	-fx-border-width: 0.5px;
-	-fx-border-radius: 5px;
+	-fx-border-width: 0.7px;
+	-fx-border-radius: 7px;
 	-fx-background-radius: 5px;
+	-fx-font-size: 15px;
+	-fx-text-fill: white; 	
 }
 .loginTextField:focused{
 	-fx-background-color: rgba(0, 0, 0, 0.1);
-	-fx-border-width: 1px;	
+	-fx-border-width: 1.4px;	
 }
-.loginButton{
-	-fx-background-color: rgba(255, 255, 255, 0.2);
+#loginButton{
+	-fx-font-size: 30px;
 	-fx-cursor: hand;
+	-fx-background-color: rgba(255, 255, 255, 0.2);
+	-fx-background-radius: 50px;
 }
-.loginButton:hover, .loginButton:focused {
-	-fx-background-color: rgba(255, 255, 255, 0.5);	
+#loginButton:hover, #loginButton:focused {
+	-fx-background-color: rgba(255, 255, 255, 0.5);		
 }
 
-
-
+.mainBackground{	
+	-fx-background-color: linear-gradient(from 100% 100% to 0% 0%, rgba(108, 95, 200, 0.95), rgba(48, 30, 109, 0.95));		
+}
 .widthLeftPanel{	
 	-fx-min-width: width-left-main-panel;
 	-fx-max-width: width-left-main-panel;
 }
 #menuMainPanel{	
-	-fx-background-color: gray;	
+	-fx-background-color: white;
 }
 
 .menuButton, .topBarButton{

@@ -13,6 +13,8 @@ import com.point.IndexApp;
 import com.point.database.Database;
 import com.point.interfaces.DraggedScene;
 
+import javafx.animation.Animation;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -41,7 +43,6 @@ public class LoginController implements DraggedScene, Initializable {
 	Connection connect;
 	ResultSet result;
 	Alert alert;
-	    
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
     	onDraggedScene(loginPane);
@@ -66,7 +67,7 @@ public class LoginController implements DraggedScene, Initializable {
 		        return;
 			} 
 			if(Database.verifyPassword(loginPassword.getText(), result.getString("password"))) {
-				IndexApp.setRoot("main", "main");
+				IndexApp.setRoot("main", "main");	
 			} else {
 				alert.setContentText("Contraseña Incorrecta");
 				alert.showAndWait();

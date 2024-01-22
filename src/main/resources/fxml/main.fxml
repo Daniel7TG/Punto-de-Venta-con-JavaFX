@@ -29,13 +29,14 @@
 <?import org.controlsfx.control.tableview2.TableView2?>
 <?import org.controlsfx.control.textfield.CustomTextField?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../styles/Styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.point.controllers.MainController">
+
+<BorderPane fx:id="appPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" styleClass="mainBackground" stylesheets="@../styles/Styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.point.controllers.MainController">
    <center>
-      <AnchorPane BorderPane.alignment="CENTER">
+      <AnchorPane fx:id="contentMain" prefWidth="1063.0" BorderPane.alignment="CENTER">
          <children>
             <BorderPane fx:id="newProductPane" layoutX="-229.60000610351562" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-230.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <center>
-                  <VBox style="-fx-background-color: green;">
+                  <VBox>
                      <children>
                         <TableView2 fx:id="tableProducts" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                            <columns>
@@ -101,7 +102,8 @@
                                           </HBox>
                                        </children>
                                     </VBox>
-                                 </content></Tab>
+                                 </content>
+                              </Tab>
                             <Tab fx:id="createProdTab" closable="false" text="Untitled Tab 2">
                                  <content>
                                     <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
@@ -121,15 +123,18 @@
                                                 <Label text="Nombre" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER">
                                                    <font>
                                                       <Font size="20.0" />
-                                                   </font></Label>
+                                                   </font>
+                                                </Label>
                                                 <Label text="Marca" GridPane.rowIndex="1">
                                                    <font>
                                                       <Font size="20.0" />
-                                                   </font></Label>
+                                                   </font>
+                                                </Label>
                                                 <Label text="Precio" GridPane.rowIndex="2">
                                                    <font>
                                                       <Font size="20.0" />
-                                                   </font></Label>
+                                                   </font>
+                                                </Label>
                                                 <CustomTextField fx:id="newProdName" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="215.0" styleClass="searchProductField" GridPane.columnIndex="1" GridPane.columnSpan="2" />
                                                 <CustomTextField fx:id="newProdBrandTxt" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="215.0" styleClass="searchProductField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                 <ComboBox fx:id="newProdBrandCb" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="83.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
@@ -176,7 +181,8 @@
                                                             <Image url="@../img/default.jpg" />
                                                          </image>
                                                       </ImageView>
-                                                   </graphic></Button>
+                                                   </graphic>
+                                                </Button>
                                              </children>
                                           </Pane>
                                        </children>
@@ -197,7 +203,7 @@
                         <FlowPane alignment="CENTER_RIGHT" hgap="20.0" maxWidth="1.7976931348623157E308" VBox.vgrow="NEVER">
                            <children>
                               <Button mnemonicParsing="false" onAction="#clearFilters" prefHeight="30.0" prefWidth="114.0" text="Limpiar Filtro" />
-                              <Button fx:id="confirmProdButton1" mnemonicParsing="false" onAction="#confirmProduct" prefHeight="30.0" prefWidth="80.0" text="Confirmar" />
+                              <Button fx:id="confirmProdButton" mnemonicParsing="false" onAction="#confirmProduct" prefHeight="30.0" prefWidth="80.0" text="Confirmar" />
                            </children>
                         </FlowPane>
                      </children>
@@ -207,7 +213,7 @@
                   </VBox>
                </center>
                <right>
-                  <AnchorPane fx:id="productDetailsPane" prefHeight="200.0" prefWidth="300.0" BorderPane.alignment="CENTER">
+                  <AnchorPane fx:id="productDetailsPane" prefHeight="200.0" prefWidth="300.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
                      <children>
                         <VBox fx:id="selectedProduct" alignment="TOP_CENTER" disable="true" prefHeight="200.0" prefWidth="300.0" spacing="10.0" style="-fx-background-color: lightgray;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
@@ -269,7 +275,8 @@
                               <Button fx:id="changeProductButton" mnemonicParsing="false" onAction="#saveChangeButton" text="Guardar Cambios">
                                  <VBox.margin>
                                     <Insets bottom="10.0" />
-                                 </VBox.margin></Button>
+                                 </VBox.margin>
+                              </Button>
                            </children>
                            <padding>
                               <Insets top="10.0" />
@@ -280,17 +287,17 @@
                   </AnchorPane>
                </right>
             </BorderPane>
-            <AnchorPane fx:id="newAdminPane" disable="true" layoutX="205.60000610351562" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="540.0" prefWidth="1030.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-230.0" AnchorPane.rightAnchor="-300.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane fx:id="newAdminPane" disable="true" layoutX="205.60000610351562" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="540.0" prefWidth="1030.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-230.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Label alignment="CENTER" layoutX="229.0" layoutY="62.0" maxHeight="50.0" prefHeight="50.0" text="Registrar Admin" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="newSalePane" disable="true" layoutX="463.20001220703125" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="540.0" prefWidth="1030.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-230.0" AnchorPane.rightAnchor="-300.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane fx:id="newSalePane" disable="true" layoutX="463.20001220703125" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="540.0" prefWidth="1030.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-230.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Label alignment="CENTER" layoutX="229.0" layoutY="62.0" maxHeight="50.0" prefHeight="50.0" text="Registrar Productos" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="historyPane" disable="true" layoutX="721.5999755859375" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="540.0" prefWidth="1030.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-230.0" AnchorPane.rightAnchor="-300.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane fx:id="historyPane" disable="true" layoutX="721.5999755859375" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="540.0" prefWidth="1030.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-230.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Label alignment="CENTER" layoutX="229.0" layoutY="62.0" maxHeight="50.0" prefHeight="50.0" text="Historial" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
@@ -299,25 +306,28 @@
       </AnchorPane>
    </center>
    <top>
-      <FlowPane fx:id="topPanel" alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="1.7976931348623157E308" minHeight="25.0" prefHeight="25.0" BorderPane.alignment="CENTER">
+      <FlowPane fx:id="topPanel" alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="1.7976931348623157E308" minHeight="25.0" prefHeight="25.0" style="-fx-background-color: lightgray;" BorderPane.alignment="CENTER">
          <children>
             <Button mnemonicParsing="false" onAction="#minimizeApp" styleClass="topBarButton" text="-">
                <font>
                   <Font size="8.0" />
-               </font></Button>
+               </font>
+            </Button>
             <Button mnemonicParsing="false" onAction="#maximizeApp" styleClass="topBarButton" text="[]">
                <font>
                   <Font size="6.0" />
-               </font></Button>
+               </font>
+            </Button>
             <Button mnemonicParsing="false" onAction="#closeApp" styleClass="topBarButton" text="X">
                <font>
                   <Font size="9.0" />
-               </font></Button>
+               </font>
+            </Button>
          </children>
       </FlowPane>
    </top>
    <left>
-      <AnchorPane prefHeight="200.0" prefWidth="69.0" translateX="-230.0" BorderPane.alignment="CENTER">
+      <AnchorPane fx:id="menuPaneAnchor" prefHeight="200.0" prefWidth="69.0" translateX="-230.0" BorderPane.alignment="CENTER">
          <children>
             <VBox id="menuMainPanel" fx:id="menuPane" alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" prefWidth="300.0" styleClass="widthLeftPanel" stylesheets="@../styles/Styles.css" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
