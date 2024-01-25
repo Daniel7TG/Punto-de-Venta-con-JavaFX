@@ -29,7 +29,6 @@
 <?import org.controlsfx.control.tableview2.TableView2?>
 <?import org.controlsfx.control.textfield.CustomTextField?>
 
-
 <BorderPane fx:id="appPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" styleClass="mainBackground" stylesheets="@../styles/Styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.point.controllers.MainController">
    <center>
       <AnchorPane fx:id="contentMain" prefWidth="1063.0" BorderPane.alignment="CENTER">
@@ -46,28 +45,35 @@
                               <TableColumn fx:id="marcaProductColumn" editable="false" prefWidth="75.0" text="Marca" />
                               <TableColumn fx:id="existenciasProductColumn" editable="false" prefWidth="40.0" text="Existencias" />
                               <TableColumn fx:id="detallesProductColumn" editable="false" prefWidth="75.0" text="Detalles" />
+                              <TableColumn fx:id="deleteColumn" editable="false" prefWidth="50.0" text="Eliminar" />
                            </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                            </columnResizePolicy>
+                           <VBox.margin>
+                              <Insets bottom="20.0" />
+                           </VBox.margin>
                         </TableView2>
-                        <TabPane maxHeight="220.0" minHeight="220.0" minWidth="870.0" prefHeight="220.0" prefWidth="870.0" tabClosingPolicy="UNAVAILABLE">
+                        <TabPane id="controlObjetos" maxHeight="220.0" minHeight="220.0" prefHeight="220.0" tabClosingPolicy="UNAVAILABLE">
                           <tabs>
-                            <Tab fx:id="filterProdTab" closable="false" text="Untitled Tab 1">
+                            <Tab fx:id="filterProdTab" closable="false" text="Filtrar">
                                  <content>
-                                    <VBox>
+                                    <VBox styleClass="inTab">
                                        <children>
                                           <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
                                              <children>
-                                                <Label styleClass="searchProductLabel" text="Filtrar por Nombre">
+                                                <Label maxHeight="30.0" prefHeight="30.0" styleClass="searchProductLabel" text="Filtrar por Nombre">
                                                    <font>
                                                       <Font size="20.0" />
                                                    </font>
                                                    <HBox.margin>
-                                                      <Insets right="20.0" />
+                                                      <Insets />
                                                    </HBox.margin>
+                                                   <padding>
+                                                      <Insets right="20.0" />
+                                                   </padding>
                                                 </Label>
-                                                <CustomTextField fx:id="filterProdName" maxWidth="1.7976931348623157E308" prefColumnCount="15" prefWidth="200.0" styleClass="searchProductField">
+                                                <CustomTextField fx:id="filterProdName" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefColumnCount="15" prefWidth="200.0" styleClass="searchProductField">
                                                    <HBox.margin>
                                                       <Insets right="60.0" />
                                                    </HBox.margin>
@@ -77,40 +83,62 @@
                                                       <Font size="20.0" />
                                                    </font>
                                                    <HBox.margin>
-                                                      <Insets right="20.0" />
+                                                      <Insets />
                                                    </HBox.margin>
+                                                   <padding>
+                                                      <Insets right="20.0" />
+                                                   </padding>
                                                 </Label>
                                                 <CheckComboBox fx:id="filterProdBrand" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="200.0" styleClass="searchProductField" />
                                              </children>
                                              <padding>
-                                                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                                <Insets bottom="15.0" left="15.0" right="15.0" top="20.0" />
                                              </padding>
                                           </HBox>
-                                          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                          <GridPane>
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="466.9999771118164" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES" />
+                                              <RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES" />
+                                            </rowConstraints>
                                              <children>
-                                                <Spinner fx:id="filterRangeLeft" editable="true" prefHeight="26.0" prefWidth="120.0" />
-                                                <RangeSlider fx:id="filterRangeBar" blockIncrement="1.0" highValue="1000.0" lowValue="0.0" majorTickUnit="100.0" max="1000.0" maxWidth="1.7976931348623157E308" minorTickCount="1" prefHeight="23.0" showTickLabels="true" showTickMarks="true" HBox.hgrow="ALWAYS">
+                                                <Label id="descriptionLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="createProductLabel" text="Minimo">
+                                                   <font>
+                                                      <Font size="20.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label id="descriptionLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="createProductLabel" text="Maximo" GridPane.columnIndex="2">
+                                                   <font>
+                                                      <Font size="20.0" />
+                                                   </font>
+                                                </Label>
+                                                <Spinner fx:id="filterRangeLeft" editable="true" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="120.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                                                <Spinner fx:id="filterRangeRight" editable="true" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="120.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                                                <RangeSlider fx:id="filterRangeBar" blockIncrement="1.0" highValue="1000.0" lowValue="0.0" majorTickUnit="100.0" max="1000.0" maxWidth="1.7976931348623157E308" minorTickCount="1" prefHeight="23.0" showTickLabels="true" showTickMarks="true" GridPane.columnIndex="1" GridPane.rowSpan="2">
                                                    <padding>
-                                                      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                                      <Insets bottom="15.0" left="30.0" right="30.0" top="15.0" />
                                                    </padding>
                                                 </RangeSlider>
-                                                <Spinner fx:id="filterRangeRight" editable="true" prefHeight="26.0" prefWidth="120.0" />
                                              </children>
                                              <padding>
-                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                                              </padding>
-                                          </HBox>
+                                          </GridPane>
                                        </children>
                                     </VBox>
                                  </content>
                               </Tab>
-                            <Tab fx:id="createProdTab" closable="false" text="Untitled Tab 2">
+                            <Tab fx:id="createProdTab" closable="false" text="Crear">
                                  <content>
-                                    <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                                    <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0" styleClass="inTab">
                                        <children>
                                           <GridPane maxWidth="400.0" HBox.hgrow="ALWAYS">
                                             <columnConstraints>
-                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="96.0" minWidth="10.0" prefWidth="96.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="96.0" minWidth="10.0" prefWidth="85.0" />
                                               <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="112.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="108.19999999999999" minWidth="10.0" prefWidth="108.19999999999999" />
                                             </columnConstraints>
@@ -120,63 +148,64 @@
                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
-                                                <Label text="Nombre" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER">
+                                                <Label maxWidth="1.7976931348623157E308" text="Nombre" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER">
                                                    <font>
                                                       <Font size="20.0" />
                                                    </font>
                                                 </Label>
-                                                <Label text="Marca" GridPane.rowIndex="1">
+                                                <Label maxWidth="1.7976931348623157E308" text="Marca" GridPane.rowIndex="1">
                                                    <font>
                                                       <Font size="20.0" />
                                                    </font>
                                                 </Label>
-                                                <Label text="Precio" GridPane.rowIndex="2">
+                                                <Label maxWidth="1.7976931348623157E308" text="Precio" GridPane.rowIndex="2">
                                                    <font>
                                                       <Font size="20.0" />
                                                    </font>
                                                 </Label>
                                                 <CustomTextField fx:id="newProdName" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="215.0" styleClass="searchProductField" GridPane.columnIndex="1" GridPane.columnSpan="2" />
-                                                <CustomTextField fx:id="newProdBrandTxt" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="215.0" styleClass="searchProductField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <CustomTextField fx:id="newProdBrandTxt" maxWidth="1.7976931348623157E308" prefHeight="26.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                   <styleClass>
+                                                      <String fx:value="searchProductField" />
+                                                      <String fx:value="squareNode" />
+                                                   </styleClass></CustomTextField>
                                                 <ComboBox fx:id="newProdBrandCb" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="83.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                 <Spinner fx:id="newProdPrice" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                              </children>
                                           </GridPane>
                                           <GridPane maxWidth="500.0" HBox.hgrow="ALWAYS">
                                             <columnConstraints>
-                                              <ColumnConstraints hgrow="NEVER" maxWidth="131.20000610351562" minWidth="10.0" prefWidth="131.20000610351562" />
-                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="179.99999389648437" />
+                                              <ColumnConstraints hgrow="NEVER" maxWidth="96.0" minWidth="85.0" prefWidth="85.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="224.20000457763672" />
                                             </columnConstraints>
                                             <rowConstraints>
-                                              <RowConstraints maxHeight="51.200018310546874" minHeight="10.0" prefHeight="39.9999755859375" vgrow="SOMETIMES" />
-                                              <RowConstraints maxHeight="88.0" minHeight="10.0" prefHeight="68.60001220703126" vgrow="SOMETIMES" />
-                                              <RowConstraints maxHeight="45.59998779296873" minHeight="10.0" prefHeight="45.59998779296873" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" vgrow="ALWAYS" />
+                                              <RowConstraints maxHeight="88.0" minHeight="10.0" vgrow="SOMETIMES" />
+                                              <RowConstraints maxHeight="45.59998779296873" minHeight="10.0" prefHeight="38.80001220703126" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
-                                                <TextArea fx:id="newProdDetails" maxHeight="1.7976931348623157E308" prefHeight="63.0" prefWidth="255.0" wrapText="true" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
-                                                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="createProductLabel" text="Descripcion" GridPane.columnSpan="2">
+                                                <Label id="descriptionLabel" maxWidth="1.7976931348623157E308" styleClass="createProductLabel" text="Descripcion" GridPane.columnSpan="2" GridPane.vgrow="NEVER">
                                                    <font>
                                                       <Font size="20.0" />
                                                    </font>
-                                                   <padding>
-                                                      <Insets left="10.0" />
-                                                   </padding>
                                                 </Label>
-                                                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="93.0" styleClass="createProductLabel" text="Cantidad" GridPane.halignment="LEFT" GridPane.rowIndex="2">
+                                                <Label maxWidth="1.7976931348623157E308" prefWidth="93.0" styleClass="createProductLabel" text="Cantidad" GridPane.halignment="LEFT" GridPane.rowIndex="2">
                                                    <font>
                                                       <Font size="20.0" />
                                                    </font>
-                                                   <padding>
-                                                      <Insets left="10.0" />
-                                                   </padding>
                                                 </Label>
+                                                <TextArea id="descriptionArea" fx:id="newProdDetails" maxHeight="1.7976931348623157E308" prefHeight="74.0" prefWidth="320.0" wrapText="true" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
                                                 <Spinner fx:id="newProdQuantity" editable="true" prefHeight="26.0" prefWidth="143.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                              </children>
+                                             <padding>
+                                                <Insets left="10.0" />
+                                             </padding>
                                           </GridPane>
                                           <Pane maxWidth="400.0" nodeOrientation="RIGHT_TO_LEFT" HBox.hgrow="ALWAYS">
                                              <children>
-                                                <Button fx:id="newProdImgButton" contentDisplay="TOP" maxHeight="153.0" maxWidth="140.0" mnemonicParsing="false" onAction="#selectProdImage" prefHeight="153.0" prefWidth="140.0" text="Button">
+                                                <Button fx:id="newProdImgButton" contentDisplay="TOP" maxHeight="1.7976931348623157E308" maxWidth="140.0" mnemonicParsing="false" onAction="#selectProdImage" prefWidth="140.0" styleClass="borderedNode" text="Button">
                                                    <graphic>
-                                                      <ImageView fx:id="newProdView" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+                                                      <ImageView fx:id="newProdView" fitHeight="100.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
                                                             <Image url="@../img/default.jpg" />
                                                          </image>
@@ -197,13 +226,13 @@
                               <Insets />
                            </VBox.margin>
                            <padding>
-                              <Insets bottom="10.0" top="10.0" />
+                              <Insets bottom="10.0" top="20.0" />
                            </padding>
                         </TabPane>
-                        <FlowPane alignment="CENTER_RIGHT" hgap="20.0" maxWidth="1.7976931348623157E308" VBox.vgrow="NEVER">
+                        <FlowPane alignment="CENTER_RIGHT" hgap="20.0" maxWidth="1.7976931348623157E308" prefWidth="858.0" VBox.vgrow="NEVER">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#clearFilters" prefHeight="30.0" prefWidth="114.0" text="Limpiar Filtro" />
-                              <Button fx:id="confirmProdButton" mnemonicParsing="false" onAction="#confirmProduct" prefHeight="30.0" prefWidth="80.0" text="Confirmar" />
+                              <Button mnemonicParsing="false" onAction="#clearFilters" prefWidth="114.0" text="Limpiar Filtro" />
+                              <Button fx:id="confirmProdButton" mnemonicParsing="false" onAction="#confirmProduct" prefWidth="80.0" text="Confirmar" />
                            </children>
                         </FlowPane>
                      </children>
@@ -213,9 +242,9 @@
                   </VBox>
                </center>
                <right>
-                  <AnchorPane fx:id="productDetailsPane" prefHeight="200.0" prefWidth="300.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+                  <AnchorPane fx:id="productDetailsPane" BorderPane.alignment="CENTER">
                      <children>
-                        <VBox fx:id="selectedProduct" alignment="TOP_CENTER" disable="true" prefHeight="200.0" prefWidth="300.0" spacing="10.0" style="-fx-background-color: lightgray;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox fx:id="selectedProduct" alignment="TOP_CENTER" spacing="10.0" styleClass="panelDetails" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane maxHeight="200.0" minHeight="200.0" prefHeight="200.0" prefWidth="200.0">
                                  <children>
@@ -282,8 +311,11 @@
                               <Insets top="10.0" />
                            </padding>
                         </VBox>
-                        <Label fx:id="notSelectedProduct" alignment="CENTER" text="Selecciona un Producto de la Tabla para mostrar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <Label fx:id="notSelectedProduct" alignment="CENTER" disable="true" styleClass="panelDetails" text="Selecciona un Producto de la Tabla para mostrar" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
                   </AnchorPane>
                </right>
             </BorderPane>
@@ -329,7 +361,7 @@
    <left>
       <AnchorPane fx:id="menuPaneAnchor" prefHeight="200.0" prefWidth="69.0" translateX="-230.0" BorderPane.alignment="CENTER">
          <children>
-            <VBox id="menuMainPanel" fx:id="menuPane" alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" prefWidth="300.0" styleClass="widthLeftPanel" stylesheets="@../styles/Styles.css" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox id="menuMainPanel" fx:id="menuPane" alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" prefWidth="300.0" spacing="10.0" styleClass="widthLeftPanel" stylesheets="@../styles/Styles.css" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <AnchorPane prefHeight="180.0" prefWidth="300.0">
                      <children>

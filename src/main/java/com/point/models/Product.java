@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.point.database.Database;
 
@@ -141,36 +142,46 @@ public class Product {
 		        prices[0] = result.getDouble(1); 
 		    }			
 		}catch(SQLException e) {
-			e.printStackTrace();
+			prices[0] = (double) 0;
+			prices[1] = (double) 0;
 		}
 		return prices;
 		
 	}
 	
 	
-	public static void saveProduct(Product product) {		
+	public static long saveProduct(Product product) {		
+		Long id = 0L;
 		try {
+			
 			if(product.id == 0) {
 				saveProduct(product, "INSERT INTO product(name, price, brand, image, details, quantity) VALUES (?, ?, ?, ?, ?, ?)");			
+				statement.executeUpdate();
+				ResultSet generatedKeys = statement.getGeneratedKeys();
+				generatedKeys.next();
+				id = generatedKeys.getLong(1);
 			} else { 			
 				saveProduct(product, "UPDATE product SET name = ?, price = ?, brand = ?, image = ?, details = ?, quantity = ? WHERE id = ?");						
 				statement.setLong(7, product.id);
+				statement.executeUpdate();
+				id = product.id;
 			}
-			statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return id;
+		
 	}
 
 	public static void saveProduct(Product product, String instruction) throws SQLException {
 		connect = Database.getConnect();
-		statement = connect.prepareStatement(instruction);
+		statement = connect.prepareStatement(instruction, Statement.RETURN_GENERATED_KEYS);
 		statement.setString(1, product.name);
 		statement.setDouble(2, product.price);
 		statement.setString(3, product.brand.isBlank() ? "" : product.brand);
 		statement.setString(4, product.imagen.isBlank() ? "img/default.jpg" : product.imagen);
 		statement.setString(5, product.details.isBlank() ? "sin detalles" : product.details);
-		statement.setInt(6, product.quantity);
+		statement.setInt(6, product.quantity);		
 	}
 
 	public Long getId() {

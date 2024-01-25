@@ -75,6 +75,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.scene.transform.Translate;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -150,7 +151,7 @@ public class MainController implements DraggedScene, Initializable{
 	WIDTH_PANEL_MOVEMENT = WIDTH_MAIN_PANEL - WIDTH_VISIBLE_BUTTONS_PANEL;
 	private final Color[]
 	SUCCESS = {Color.web("a2e0c4", 0.9), Color.web("#006134")},
-	ALERT = {Color.web("ffdb99", 0.9), Color.web("#d4b611")},
+	ALERT = {Color.web("fee6c6", 0.9), Color.web("#fca300")},
 	ERROR = {Color.web("d46e73", 0.9), Color.web("#a1131a")};
 
 	// Products Panel
@@ -165,6 +166,8 @@ public class MainController implements DraggedScene, Initializable{
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+
+		
 		onDraggedScene(topPanel);		
 		if (!Files.exists(IMAGE_PATH)) {
 			try {
@@ -191,10 +194,11 @@ public class MainController implements DraggedScene, Initializable{
 			));
 		alert.setBackground(new Background(new BackgroundFill( colors[0], new CornerRadii(10), Insets.EMPTY))); 
 		alert.setTextFill(colors[1]);
+		alert.setFont(new Font("Montserrat", 14));
 		alert.setLayoutX(85 - 300);
 		alert.setLayoutY(30 + (60 * amount));
 		alert.setPadding(new Insets(10));
-		alert.setPrefWidth(300);
+		alert.setPrefWidth(330);
 		alert.setPrefHeight(50);
 		contentMain.getChildren().add(alert);
 		menuPaneAnchor.toFront();
@@ -213,12 +217,12 @@ public class MainController implements DraggedScene, Initializable{
 	
 	// Guarda un producto con los datos registrados
 	public void confirmProduct() {	
+
 		if(filterProdTab.isSelected()) 
 			searchProducts();
 		else { 
-			String image = saveImage(newProdView);
-			if(validateNewProd()) {
-				summonAlert("Producto guardado Correctamente", SUCCESS, 0);
+			if(validateNewProd(newProdName, newPriceSpinner, newProdBrandTxt, newProdView, newProdDetails, newQuantitySpinner)) {
+				String image = saveImage(newProdView);
 				saveProduct(0L, newProdName, newPriceSpinner, newProdBrandTxt, image, newProdDetails, newQuantitySpinner);
 				clearCreateNew();				
 			}
@@ -253,18 +257,22 @@ public class MainController implements DraggedScene, Initializable{
 	public void saveChangeButton() {
 		Product product = tableProducts.getSelectionModel().getSelectedItem();
 		String image = product.getImagen();
-		try {
-			// si cambia la imagen
-			if( !imgProductDetails.getImage().getUrl().equals(product.getImagen()) ) {
-				if(!product.getImagen().equals(DEFAULT_IMAGE)) {				
-					Files.deleteIfExists( Util.getPath(image));
+		if(validateNewProd(nameProductDetails, priceSpinner, brandProductDetailsTxt, imgProductDetails, detailsProductDetails, quantitySpinner)) {
+			try {
+
+				// si cambia la imagen
+				if( !imgProductDetails.getImage().getUrl().equals(product.getImagen()) ) {
+					if(!product.getImagen().equals(DEFAULT_IMAGE)) {				
+						Files.deleteIfExists( Util.getPath(image));
+					}
+					image = saveImage(imgProductDetails);							
 				}
-				image = saveImage(imgProductDetails);							
+
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			saveProduct(product.getId(), nameProductDetails, priceSpinner, brandProductDetailsTxt, image, detailsProductDetails, quantitySpinner);
 		}
-		saveProduct(product.getId(), nameProductDetails, priceSpinner, brandProductDetailsTxt, image, detailsProductDetails, quantitySpinner);
 	}
 
 	
@@ -282,7 +290,8 @@ public class MainController implements DraggedScene, Initializable{
 				quantity.getValue()
 				);
 
-		Product.saveProduct(product);
+		product.setId(Product.saveProduct(product));
+		
 		clearFilters(); // incluye actualizar tabla
 		updateComboBoxes();
 		updateFilterRange();
@@ -472,31 +481,53 @@ public class MainController implements DraggedScene, Initializable{
 		updateComboBoxes();		
 	}
 	
-	private boolean validateNewProd() {
+	private boolean validateNewProd(CustomTextField name, SpinnerValueFactory<Double> price, CustomTextField brand, ImageView image, TextArea details, SpinnerValueFactory<Integer> quantity) {
 		
 		ArrayList<String> errores = new ArrayList<String>();
-		if(newProdName.getText().isBlank()) {
+		ArrayList<String> alertas = new ArrayList<String>();
+		if(name.getText().isBlank()) {
 			errores.add("El nombre no debe estar vacio");
-			Util.errorHighlight(newProdName);
+			Util.errorHighlight(name);
+		} else if(name.getText().length() >= 30) {
+			errores.add("El nombre debe ser menor a 30 caracteres");
+			Util.errorHighlight(name);			
 		}
-		if(newPriceSpinner.getValue() == 0) {
-			errores.add("El precio debe ser mayor a 0");
-			Util.errorHighlight(newProdPrice);
-		}
-		if(newQuantitySpinner.getValue() == 0) {
-			errores.add("La cantidad debe ser mayor a 0");
-			Util.errorHighlight(newProdQuantity);
-		}
-		if(newProdBrandTxt.getText().isBlank()) {
+		
+		if(brand.getText().isBlank()) {
 			errores.add("El nombre de la marca no debe estar vacio");
-			Util.errorHighlight(newProdBrandTxt);
+			Util.errorHighlight(brand);
+		} else if(brand.getText().length() >= 20) {
+			errores.add("La marca debe ser menor a 20 caracteres");
+			Util.errorHighlight(brand);			
+		}
+		
+
+		if(price.getValue() == 0) {
+			alertas.add("Guardado con precio de 0");
+		}
+		if(quantity.getValue() == 0) {
+			alertas.add("Guardado con cantidad de 0");
+		}
+		if(image.getImage().getUrl().equals(DEFAULT_IMAGE)) {
+			alertas.add("Guardado sin imagen");
+		}
+		if(details.getText().isBlank()) {
+			alertas.add("Guardado sin detalles");			
 		}
 		
 		for(int i = 0; i < errores.size(); i++) {
 			summonAlert(errores.get(i), ERROR, i);
 		}
-	
-
+		if(!errores.isEmpty()) {
+			return errores.isEmpty();
+		}
+		
+		for(int i = 0; i < alertas.size(); i++) {
+			summonAlert(alertas.get(i), ALERT, i);
+		}
+		if(alertas.isEmpty()) {
+			summonAlert("Producto guardado Correctamente", SUCCESS, 0);
+		}
 		
 		return errores.isEmpty();
 	}
@@ -513,6 +544,7 @@ public class MainController implements DraggedScene, Initializable{
 	private void updateTableProducts() {
 		ObservableList<Product> loadedProducts = Product.getAllProducts();
 		tableProducts.setItems(loadedProducts);
+//		tableProducts.getSelectionModel().clearSelection();
 	}
 	// Actualiza los datos de las marcas desde la db
 	private void updateComboBoxes() {

@@ -40,7 +40,7 @@ public class Brand {
 			e.printStackTrace();
 		}
 		
-		return list.isEmpty() ? null : list;
+		return list;
 	}
 	
 	public static boolean existBrand(String brand) {
