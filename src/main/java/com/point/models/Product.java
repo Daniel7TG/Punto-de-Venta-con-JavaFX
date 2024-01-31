@@ -79,15 +79,15 @@ public class Product {
 			e.printStackTrace();
 		}
 		
-		return list.isEmpty() ? null : list;
+		return list;
 	}
 	
 	
-	public static ObservableList<Product> getFilteredProducts(String name, Double min, Double max, ObservableList<String> brandList) {
+	public static ObservableList<Product> getFilteredProducts(String id, String name, Double min, Double max, ObservableList<String> brandList) {
 		
 		connect = Database.getConnect();
 		ObservableList<Product> list = FXCollections.observableArrayList();
-		String instruction = "SELECT * FROM product WHERE name LIKE ? AND price BETWEEN ? AND ?";
+		String instruction = "SELECT * FROM product WHERE name LIKE ? AND price BETWEEN ? AND ? AND id LIKE ?";
 		try {
 			
 			if(!brandList.isEmpty()) {
@@ -101,6 +101,7 @@ public class Product {
 			statement.setString(1, "%" + name + "%");
 			statement.setDouble(2, min);
 			statement.setDouble(3, max);
+			statement.setString(4, "%" + id + "%");
 			
 			for(int i = 0; i < brandList.size(); i++) {
 				statement.setString( i+4, brandList.get(i));
@@ -150,28 +151,20 @@ public class Product {
 	}
 	
 	
-	public static long saveProduct(Product product) {		
-		Long id = 0L;
+	public static void saveProduct(Product product) {				
 		try {
-			
-			if(product.id == 0) {
-				saveProduct(product, "INSERT INTO product(name, price, brand, image, details, quantity) VALUES (?, ?, ?, ?, ?, ?)");			
-				statement.executeUpdate();
-				ResultSet generatedKeys = statement.getGeneratedKeys();
-				generatedKeys.next();
-				id = generatedKeys.getLong(1);
-			} else { 			
+			if( exist(product.id) ) {
 				saveProduct(product, "UPDATE product SET name = ?, price = ?, brand = ?, image = ?, details = ?, quantity = ? WHERE id = ?");						
-				statement.setLong(7, product.id);
 				statement.executeUpdate();
-				id = product.id;
+			} else { 			
+				saveProduct(product, "INSERT INTO product(name, price, brand, image, details, quantity, id) VALUES (?, ?, ?, ?, ?, ?, ?)");			
+				statement.executeUpdate();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return id;
-		
 	}
+ 
 
 	public static void saveProduct(Product product, String instruction) throws SQLException {
 		connect = Database.getConnect();
@@ -182,6 +175,34 @@ public class Product {
 		statement.setString(4, product.imagen.isBlank() ? "img/default.jpg" : product.imagen);
 		statement.setString(5, product.details.isBlank() ? "sin detalles" : product.details);
 		statement.setInt(6, product.quantity);		
+		statement.setLong(7, product.id);
+	}
+	
+	public static void deleteProduct(Long id) {
+		connect = Database.getConnect();
+		try {
+			statement = connect.prepareStatement("DELETE FROM product WHERE id = ?");
+			statement.setLong(1, id);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static boolean exist(Long id) {
+		connect = Database.getConnect();
+		try {
+			statement = connect.prepareStatement("SELECT * FROM product WHERE id = ?");
+			statement.setLong(1, id);
+			result = statement.executeQuery();
+			
+			return result.next();	
+		
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return false;	
+		}
 	}
 
 	public Long getId() {

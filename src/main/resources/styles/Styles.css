@@ -125,6 +125,10 @@
  
 .table-row-cell:empty .table-cell {
     -fx-border-width: 0px;
+    -fx-padding: 0px;
+}
+.table-cell {
+    -fx-padding: 0; /* 2px, plus border adds 1px */
 }
 
 .table-view:row-selection .table-row-cell:filled:hover { 
@@ -158,6 +162,7 @@
 /*  -fx-background-insets: -1.4, 0, 1;
   -fx-background-radius: 1.4, 0, 0;*/
 }
+
  
 .table-view .column-header .label{
     -fx-text-fill: black;
@@ -185,6 +190,17 @@
     -fx-background-color: white;
     -fx-border-color: -fx-box-border;
     -fx-border-insets: 0;
+}
+.deleteButton{
+	-fx-border-radius: 0;
+	-fx-background-radius: 0;
+	-fx-background-color: #7e002e;
+	-fx-font-size: 9.3px;
+	-fx-text-fill: white;
+}
+.deleteButton:hover{
+	-fx-background-color: #a4003b;
+	-fx-cursor: hand;
 }
 
 
