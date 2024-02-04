@@ -13,7 +13,7 @@ import javafx.collections.ObservableList;
 
 public class Product {
 
-	private Long id;
+	private String id;
 	private String name;
 	private double price;
 	private String brand;
@@ -33,7 +33,7 @@ public class Product {
 	 * @param imagen
 	 * @param details
 	 */
-	public Product(Long id, String name, double price, String brand, String imagen, String details, int quantity) {
+	public Product(String id, String name, double price, String brand, String imagen, String details, int quantity) {
 		this.id = id;
 		this.name = name;
 		this.price = price;
@@ -65,7 +65,7 @@ public class Product {
 
 			while(result.next()) {
 				Product producto = new Product(
-						result.getLong("id"),
+						result.getString("id"),
 						result.getString("name"),
 						result.getDouble("price"),
 						result.getString("brand"),
@@ -80,6 +80,37 @@ public class Product {
 		}
 		
 		return list;
+	}
+	public static Product getProduct(String id) {
+		
+		connect = Database.getConnect();
+		
+		Product producto = null;
+		
+		try {
+			statement = connect.prepareStatement("SELECT * FROM product WHERE id = ?");
+			statement.setString(1, id);
+			result = statement.executeQuery();
+			
+			if(result.next()) {
+				producto = new Product(
+						result.getLong("id"),
+						result.getString("name"),
+						result.getDouble("price"),
+						result.getString("brand"),
+						result.getString("image"),
+						result.getString("details"),
+						result.getInt("quantity")
+						);
+			} else {
+				System.out.println("No esta registrado");
+			}
+			
+		} catch(SQLException e) {
+			System.out.println("error en getProduct");
+		}
+		return producto;
+		
 	}
 	
 	
@@ -175,7 +206,7 @@ public class Product {
 		statement.setString(4, product.imagen.isBlank() ? "img/default.jpg" : product.imagen);
 		statement.setString(5, product.details.isBlank() ? "sin detalles" : product.details);
 		statement.setInt(6, product.quantity);		
-		statement.setLong(7, product.id);
+		statement.setString(7, String.format("%013d", product.id));	
 	}
 	
 	public static void deleteProduct(Long id) {

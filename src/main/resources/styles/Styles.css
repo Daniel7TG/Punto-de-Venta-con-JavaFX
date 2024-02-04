@@ -244,7 +244,12 @@
 }
 
 
-#controlObjetos .inTab Label{	
+.labelSale{
+	-fx-font-family: 'Montserrat', 'sans-serif';
+	-fx-font-size: 14px;
+	-fx-font-weight: 200;	
+}
+#controlObjetos .inTab Label, .labelSale{	
 	-fx-background-color: #2c225c;
 	-fx-text-fill: white;
 	-fx-padding: 5px;
@@ -253,7 +258,6 @@
 	-fx-border-width: 1 0 1 1;
 	-fx-border-color: gray;
 	-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.1, 0.0, 0.0);
-	
 }
 #controlObjetos Label {
 	-fx-font-family: 'Montserrat', 'sans-serif';
@@ -264,7 +268,7 @@
 
 #controlObjetos CustomTextField, 
 #controlObjetos TextArea, 
-#controlObjetos Spinner, #controlObjetos Button, #controlObjetos ComboBox, #controlObjetos CheckComboBox {
+#controlObjetos Spinner, #controlObjetos Button, #controlObjetos ComboBox, #controlObjetos CheckComboBox, .hoverController {
 	-fx-font-family: 'Montserrat', 'sans-serif';
 	-fx-font-size: 12px;
 	-fx-text-fill: black; 	
@@ -273,7 +277,7 @@
 	-fx-background-radius: 0 10 10 0;
 	-fx-border-width: 1 1 1 0;
 }
-#controlObjetos CustomTextField, #controlObjetos Spinner, #controlObjetos ComboBox, #controlObjetos CheckComboBox{
+#controlObjetos CustomTextField, #controlObjetos Spinner, #controlObjetos ComboBox, #controlObjetos CheckComboBox, .hoverController{
 	-fx-pref-height: 32px;
 	-fx-max-height: 32px;
 }
@@ -281,7 +285,8 @@
 .spinner:focused > .text-field, .spinner:hover > .text-field,
 #controlObjetos ComboBox:hover, #controlObjetos ComboBox:focused,
 #controlObjetos .CheckComboBox:hover, #controlObjetos .CheckComboBox:focused,
-#controlObjetos TextArea:hover, #controlObjetos TextArea:focused
+#controlObjetos TextArea:hover, #controlObjetos TextArea:focused,
+.hoverController:hover, .hoverController:focused
 {
 	-fx-background-color: #aba6c5;
 }

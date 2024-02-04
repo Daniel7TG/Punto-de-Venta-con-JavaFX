@@ -10,6 +10,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.RangeSlider;
@@ -20,6 +21,7 @@ import com.point.Util;
 import com.point.interfaces.DraggedScene;
 import com.point.models.Brand;
 import com.point.models.Product;
+import com.point.models.SaleDetails;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
@@ -63,6 +65,29 @@ import javafx.util.Duration;
 
 public class MainController implements DraggedScene, Initializable{
 
+	// New Sale 
+	@FXML
+	BorderPane newSalePane;
+	@FXML
+	Label ticketPane;
+	@FXML
+	Spinner<Double> paymentSale;
+	@FXML
+	Spinner<Integer> quantitySale;
+	@FXML
+	CustomTextField totalCostSale, idSale;
+	@FXML
+	TableView2<SaleDetails> tableSale;
+	@FXML
+	TableColumn<SaleDetails, Long> columnIdSale;
+	@FXML
+	TableColumn<SaleDetails, Integer> columnQuantitySale;
+	@FXML
+	TableColumn<SaleDetails, String> columnNameSale;
+	@FXML
+	TableColumn<SaleDetails, Double> columnPriceSale, columnTotalSale;
+	
+	
 	@FXML
 	VBox menuPane,
 	selectedProduct;
@@ -70,7 +95,7 @@ public class MainController implements DraggedScene, Initializable{
 	FlowPane topPanel,
 	searchProductPane, createProductPane;
 	@FXML
-	AnchorPane newAdminPane, newSalePane, historyPane, productDetailsPane,
+	AnchorPane newAdminPane, historyPane, productDetailsPane,
 	mainContainer, menuPaneAnchor, contentMain;
 	@FXML 
 	BorderPane appPane,
@@ -81,9 +106,9 @@ public class MainController implements DraggedScene, Initializable{
 	@FXML 
 	TableView2<Product> tableProducts;
 	@FXML 
-	TableColumn<Product, Integer> idProductColumn, existenciasProductColumn;
+	TableColumn<Product, Integer> existenciasProductColumn;
 	@FXML 
-	TableColumn<Product, String> nombreProductColumn, marcaProductColumn, detallesProductColumn, deleteColumn;
+	TableColumn<Product, String> nombreProductColumn, marcaProductColumn, detallesProductColumn, deleteColumn, idProductColumn;
 	@FXML 
 	TableColumn<Product, Double> precioProductColumn;
 
@@ -139,8 +164,8 @@ public class MainController implements DraggedScene, Initializable{
 	private final Path IMAGE_PATH = Paths.get("img");
 
 	
-	private SpinnerValueFactory<Double> priceSpinner, newPriceSpinner, leftFilterSpinner, rightFilterSpinner ;
-	private SpinnerValueFactory<Integer> quantitySpinner, newQuantitySpinner;
+	private SpinnerValueFactory<Double> priceSpinner, newPriceSpinner, leftFilterSpinner, rightFilterSpinner, salePaymentSpinner;
+	private SpinnerValueFactory<Integer> quantitySpinner, newQuantitySpinner, saleQuantitySpinner;
 	private final FileChooser fileChooser = new FileChooser();	
 	
 	
@@ -152,7 +177,7 @@ public class MainController implements DraggedScene, Initializable{
 		onDraggedScene(topPanel);		
 
 		initializeProducts();	
-
+		initializeSale();
 	}
 	
 	
@@ -235,6 +260,63 @@ public class MainController implements DraggedScene, Initializable{
 		}
 	}
 
+	//Panel Sale
+	public void initializeSale() {
+		
+		columnIdSale.setCellValueFactory(new PropertyValueFactory<SaleDetails, Long>("id_product"));
+		columnNameSale.setCellValueFactory(new PropertyValueFactory<SaleDetails, String>("product_name"));
+		columnPriceSale.setCellValueFactory(new PropertyValueFactory<SaleDetails, Double>("unit_price"));
+		columnQuantitySale.setCellValueFactory(new PropertyValueFactory<SaleDetails, Integer>("quantity"));
+		columnTotalSale.setCellValueFactory(new PropertyValueFactory<SaleDetails, Double>("subtotal"));	
+		
+		salePaymentSpinner = new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 1000000);
+		saleQuantitySpinner = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000000);
+		
+		paymentSale.setValueFactory(salePaymentSpinner);
+		quantitySale.setValueFactory(saleQuantitySpinner);
+		
+		Util.fixDoubleSpinner(paymentSale);
+		Util.fixIntSpinner(quantitySale);
+		
+		
+	}
+	public void addProdSale() {
+		Product product = Product.getProduct(idSale.getText());
+		
+		if(product == null) {
+			Util.summonAlert("No existe el product", ERROR, 0);
+			return;
+		}
+
+		Long id = product.getId();
+		
+		ObservableList<SaleDetails> list = tableSale.getItems();
+		for(int i = 0; i < list.size(); i++) {
+			SaleDetails details = list.get(i);
+			System.out.println( details.getId_product().equals(id)+" "+ details.getId_product() + " " + id );
+			if(details.getId_product().equals(id)) {
+				details.setQuantity( details.getQuantity() + quantitySale.getValue() );
+				details.setSubtotal( details.getUnit_price() * details.getQuantity() );
+				tableSale.refresh();
+				return;
+			}
+		}
+		
+		String name = product.getName();
+		Double price = product.getPrice();
+		Integer quantity = quantitySale.getValue();
+		Double subtotal = price * quantity;
+		
+		// Guardamos sale, asignamos el id de retorno a todos los details y despues los guardamos
+		// id de details no se usa 
+		SaleDetails details = new SaleDetails( 0L, 0L, id, quantity, name, price, subtotal);
+		tableSale.getItems().add(details);
+		
+	}
+	
+	public void finishSale() {
+		
+	}
 	
 	// Panel Productos 
 	// Inicializa todos los recursos para el panel de Productos
@@ -252,7 +334,7 @@ public class MainController implements DraggedScene, Initializable{
 
 		
 		// Columnas de la tabla Productos
-		idProductColumn.setCellValueFactory(new PropertyValueFactory<Product, Integer> ("id"));
+		idProductColumn.setCellValueFactory(new PropertyValueFactory<Product, String> ("id"));
 		existenciasProductColumn.setCellValueFactory(new PropertyValueFactory<Product, Integer> ("quantity"));
 		nombreProductColumn.setCellValueFactory(new PropertyValueFactory<Product, String> ("name"));
 		marcaProductColumn.setCellValueFactory(new PropertyValueFactory<Product, String> ("brand"));
