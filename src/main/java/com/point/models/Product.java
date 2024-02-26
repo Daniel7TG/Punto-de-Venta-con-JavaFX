@@ -94,7 +94,7 @@ public class Product {
 			
 			if(result.next()) {
 				producto = new Product(
-						result.getLong("id"),
+						result.getString("id"),
 						result.getString("name"),
 						result.getDouble("price"),
 						result.getString("brand"),
@@ -135,13 +135,13 @@ public class Product {
 			statement.setString(4, "%" + id + "%");
 			
 			for(int i = 0; i < brandList.size(); i++) {
-				statement.setString( i+4, brandList.get(i));
+				statement.setString( i+5, brandList.get(i));
 			}
 			result = statement.executeQuery();			
 			
 			while(result.next()) {
 				Product producto = new Product(
-						result.getLong("id"),
+						result.getString("id"),
 						result.getString("name"),
 						result.getDouble("price"),
 						result.getString("brand"),
@@ -206,14 +206,14 @@ public class Product {
 		statement.setString(4, product.imagen.isBlank() ? "img/default.jpg" : product.imagen);
 		statement.setString(5, product.details.isBlank() ? "sin detalles" : product.details);
 		statement.setInt(6, product.quantity);		
-		statement.setString(7, String.format("%013d", product.id));	
+		statement.setString(7, product.id);	
 	}
 	
-	public static void deleteProduct(Long id) {
+	public static void deleteProduct(String id) {
 		connect = Database.getConnect();
 		try {
 			statement = connect.prepareStatement("DELETE FROM product WHERE id = ?");
-			statement.setLong(1, id);
+			statement.setString(1, id);
 			statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -221,11 +221,11 @@ public class Product {
 		
 	}
 	
-	public static boolean exist(Long id) {
+	public static boolean exist(String id) {
 		connect = Database.getConnect();
 		try {
 			statement = connect.prepareStatement("SELECT * FROM product WHERE id = ?");
-			statement.setLong(1, id);
+			statement.setString(1, id);
 			result = statement.executeQuery();
 			
 			return result.next();	
@@ -236,12 +236,12 @@ public class Product {
 		}
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 import com.point.IndexApp;
 import com.point.database.Database;
 import com.point.interfaces.DraggedScene;
+import com.point.models.Admin;
 
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
@@ -50,24 +51,22 @@ public class LoginController implements DraggedScene, Initializable {
 	
 	public void login() {
 		
-		connect = Database.getConnect();
 		
 		try {
-			statement = connect.prepareStatement("SELECT password FROM admin WHERE username = ?");
-			statement.setString(1, loginUsername.getText());
-			result = statement.executeQuery();			
+			result = Admin.get(loginUsername.getText());
 			
 			alert = new Alert(Alert.AlertType.ERROR);
 			alert.setTitle("Error");
 			alert.setHeaderText("Error al Iniciar Sesion");
 
-			if(!result.next()) {
+			if(result == null) {
 		        alert.setContentText("Usuario no existe");
 		        alert.showAndWait();
 		        return;
 			} 
 			if(Database.verifyPassword(loginPassword.getText(), result.getString("password"))) {
-				IndexApp.setRoot("main", "main");	
+				MainController controller = (MainController)IndexApp.setRoot("main", "main");
+				controller.setActualAdmin(loginUsername.getText());
 			} else {
 				alert.setContentText("Contraseña Incorrecta");
 				alert.showAndWait();

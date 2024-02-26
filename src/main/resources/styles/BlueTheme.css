@@ -1,0 +1,8 @@
+* Button{
+	-fx-background-color: #e7f0f8;
+	-fx-border-color: #6374ae;
+	-fx-text-fill: #6374ae;
+}
+* Button::hover{
+	
+}

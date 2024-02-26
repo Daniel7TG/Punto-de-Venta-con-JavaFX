@@ -1,0 +1,14 @@
+* Button{
+	-fx-background-color: #e7f0f8;
+	-fx-border-color: #6374ae;
+	-fx-text-fill: #6374ae;
+	-fx-background-insets: 0;
+	
+}
+* Button:hover{	
+	-fx-background-color: #f2f7fb;
+}
+
+#loginPane, .mainBackground{
+	-fx-background-color: linear-gradient(from 100% 100% to 0% 0%, #4a5989, #9cb6dd);		
+}

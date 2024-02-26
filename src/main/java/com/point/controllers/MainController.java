@@ -7,7 +7,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -15,27 +20,39 @@ import java.util.function.Consumer;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.tableview2.TableView2;
+import org.controlsfx.control.textfield.CustomPasswordField;
 import org.controlsfx.control.textfield.CustomTextField;
 
 import com.point.Util;
+import com.point.database.Database;
 import com.point.interfaces.DraggedScene;
+import com.point.models.Admin;
 import com.point.models.Brand;
 import com.point.models.Product;
+import com.point.models.Sale;
 import com.point.models.SaleDetails;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableListBase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -65,6 +82,50 @@ import javafx.util.Duration;
 
 public class MainController implements DraggedScene, Initializable{
 
+	private static final double HEIGHT_TABLEBTN = 40;
+	private static final int ID_LENGTH = 13;
+	private static final int MAX_NAME_LENGTH = 30;
+	private static final int MAX_BRAND_LENGTH = 20;
+
+	// Admin
+	@FXML
+	CustomTextField usernameActual, usernameNew, firstNameNew, lastNameNew;
+	@FXML
+	CustomPasswordField passwordActual, passwordNew, passwordConfirm;
+	
+	// History
+	@FXML
+	TableView2<SaleDetails> hDetailsTable;
+	@FXML
+	TableColumn<SaleDetails, String> hPNameDetails, hPIdDetails;
+	@FXML
+	TableColumn<SaleDetails, Double> hPPriceDetails, hSTotalDetails;
+	@FXML
+	TableColumn<SaleDetails, Integer> hSQuantityDetails;
+
+	@FXML
+	TableView2<Sale> historyTable;
+	@FXML
+	TableColumn<Sale, Long> hIdColumn;
+	@FXML
+	TableColumn<Sale, Integer> hAmountColumn;
+	@FXML
+	TableColumn<Sale, Date> hDateColumn;
+	@FXML
+	TableColumn<Sale, Double> hTotalColumn;	
+	@FXML
+	TableColumn<Sale, String> hActionColumn;
+
+	@FXML
+	Spinner<Double> hFilterLValue, hFilterHValue;
+	@FXML 
+	RangeSlider hFilterBar;
+	@FXML
+	Button hConfirmFilter;
+	@FXML
+	DatePicker hFilterDate;
+
+	
 	// New Sale 
 	@FXML
 	BorderPane newSalePane;
@@ -92,10 +153,13 @@ public class MainController implements DraggedScene, Initializable{
 	VBox menuPane,
 	selectedProduct;
 	@FXML
-	FlowPane topPanel,
+	FlowPane newAdminPane,
+	topPanel,
 	searchProductPane, createProductPane;
 	@FXML
-	AnchorPane newAdminPane, historyPane, productDetailsPane,
+	SplitPane historyPane;
+	@FXML
+	AnchorPane productDetailsPane,
 	mainContainer, menuPaneAnchor, contentMain;
 	@FXML 
 	BorderPane appPane,
@@ -163,21 +227,25 @@ public class MainController implements DraggedScene, Initializable{
 
 	private final Path IMAGE_PATH = Paths.get("img");
 
-	
-	private SpinnerValueFactory<Double> priceSpinner, newPriceSpinner, leftFilterSpinner, rightFilterSpinner, salePaymentSpinner;
+	private SpinnerValueFactory<Double> priceSpinner, newPriceSpinner, leftFilterSpinner, rightFilterSpinner, salePaymentSpinner
+	, hLowValue, hHighValue;
 	private SpinnerValueFactory<Integer> quantitySpinner, newQuantitySpinner, saleQuantitySpinner;
 	private final FileChooser fileChooser = new FileChooser();	
+	private String username;
+
+	// Sale Panel
+	private String ticket;
 	
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		Util.initialize(contentMain, menuPaneAnchor);
 		
-		
 		onDraggedScene(topPanel);		
 
 		initializeProducts();	
 		initializeSale();
+		initializeHistory();
 	}
 	
 	
@@ -244,6 +312,14 @@ public class MainController implements DraggedScene, Initializable{
 	// Cambia el panel principal despues de seleccionar una opcion 
 	public void changeView(ActionEvent event) {
 		Button source = (Button) event.getSource();
+		
+		if(newSalePane.isVisible() & !newSaleButton.equals(source)) {
+			Alert alert = new Alert(AlertType.WARNING, "Cambiar de Panel cancelará la venta actual", ButtonType.OK, ButtonType.CANCEL);
+			Optional<ButtonType> button = alert.showAndWait();
+			if(button.get().equals(ButtonType.CANCEL)) return;
+			resetSale();
+		}
+		
 		setAllDisable();
 		if(newSaleButton.equals(source)) {
 			newSalePane.setVisible(true);
@@ -260,6 +336,152 @@ public class MainController implements DraggedScene, Initializable{
 		}
 	}
 
+	
+	//Panel Admin
+	public void registrarAdmin() {
+		ResultSet result;
+		if( !passwordConfirm.getText().equals(passwordNew.getText()) ) {
+			Util.summonAlert("La contraseña es diferente", ERROR, 0);
+			Util.errorHighlight(passwordConfirm, passwordNew);
+			return;
+		}
+
+		if(username.equals(usernameNew.getText()) | Admin.get(usernameNew.getText()) != null) {
+			Util.summonAlert("Usuario existente", ERROR, 0);
+			Util.errorHighlight(usernameNew);
+			return;
+		}
+				
+		result = Admin.get(username);
+		try {
+			if(Database.verifyPassword(passwordActual.getText(), result.getString("password"))) {
+				Util.summonAlert("Admin Registrado", SUCCESS, 0);
+				Admin.save(firstNameNew.getText(), lastNameNew.getText(), usernameNew.getText(), passwordNew.getText());
+			} else {
+				Util.errorHighlight(usernameActual, passwordActual);
+				Util.summonAlert("Contraseña Incorrecta", ERROR, 0);				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	public void setActualAdmin(String username) {
+		this.username = username;
+		usernameActual.setText(username);
+	}
+	
+	
+	//Panel History
+	public void initializeHistory() {
+		
+		hIdColumn.setCellValueFactory(new PropertyValueFactory<Sale, Long>("id"));
+		hTotalColumn.setCellValueFactory(new PropertyValueFactory<Sale, Double>("total"));
+		hAmountColumn.setCellValueFactory(new PropertyValueFactory<Sale, Integer>("productAmount"));
+		hDateColumn.setCellValueFactory(new PropertyValueFactory<Sale, Date>("date"));
+		
+		hPIdDetails.setCellValueFactory(new PropertyValueFactory<SaleDetails, String>("id_product"));
+		hPNameDetails.setCellValueFactory(new PropertyValueFactory<SaleDetails, String>("product_name"));
+		hPPriceDetails.setCellValueFactory(new PropertyValueFactory<SaleDetails, Double>("unit_price"));
+		hSQuantityDetails.setCellValueFactory(new PropertyValueFactory<SaleDetails, Integer>("quantity"));
+		hSTotalDetails.setCellValueFactory(new PropertyValueFactory<SaleDetails, Double>("subtotal"));
+		
+		hActionColumn.setCellFactory(new Callback<TableColumn<Sale, String>, TableCell<Sale, String>>() {
+            @Override
+            public TableCell<Sale, String> call(TableColumn<Sale, String> tableColumn) {
+            	return new TableCell<Sale, String>() {
+            	
+            		@Override
+            		protected void updateItem(String item, boolean empty) {
+            			super.updateItem(item, empty);
+            			
+            			if(empty) {
+            				this.setGraphic(null);
+            			} else {            		
+            				Button btnDelete = Util.createButton("Borrar", hActionColumn.getPrefWidth() / 3, HEIGHT_TABLEBTN, "deleteButton", "tableButton");
+            				Button btnDetails = Util.createButton("Detalles", hActionColumn.getPrefWidth() / 3, HEIGHT_TABLEBTN, "detailsButton", "tableButton");
+
+            				Sale sale = this.getTableView().getItems().get(getIndex());
+            				
+            				btnDelete.setOnAction(e->{
+	            				Sale.delete(sale.getId());	
+	            				updateTableSale();
+	            				updatehFilterRange();
+	            			});
+            				
+            				btnDetails.setOnAction(e->{
+            					hDetailsTable.setItems(SaleDetails.get(sale.getId()));
+            				});
+            				
+            				FlowPane pane = new FlowPane(Orientation.HORIZONTAL, 10, 0, btnDetails, btnDelete);
+            				pane.setAlignment(Pos.CENTER);
+            				pane.setMinHeight(HEIGHT_TABLEBTN);
+            				
+	            			this.setPadding(Insets.EMPTY);
+	            			this.setGraphic(pane);
+            			}
+            		}
+            	};
+            }
+		});
+
+		
+		
+		updateTableSale();
+		updatehFilterRange();
+	}
+	
+	
+	public void hSearch() {
+		LocalDate date = hFilterDate.getValue();
+		Double min = hFilterBar.getLowValue();
+		Double max = hFilterBar.getHighValue();
+		historyTable.setItems(Sale.get(date, min, max));
+		System.out.println("a");
+	}
+	
+	
+	public void hClear() {
+		updatehFilterRange();
+		hFilterDate.setValue(null);
+		updateTableSale();
+	}
+	
+	
+	public void updateTableSale() {		
+		historyTable.setItems(Sale.getAll());
+	}
+	
+	private void updatehFilterRange() {
+		Double[] prices = Sale.getPricesRange();
+		Double min = prices[0];
+		Double max = prices[1];
+		hLowValue = new SpinnerValueFactory.DoubleSpinnerValueFactory(min, max, min, 1);
+		hHighValue = new SpinnerValueFactory.DoubleSpinnerValueFactory(min, max, max, 1);
+		hFilterLValue.setValueFactory(hLowValue);
+		hFilterHValue.setValueFactory(hHighValue);
+		hFilterBar.setMax(max);
+		hFilterBar.setMin(min);
+		hFilterBar.setHighValue(max);
+		hFilterBar.setLowValue(min);
+		
+		hLowValue.valueProperty().addListener((Observable o) -> {
+			hFilterBar.setLowValue((double) hLowValue.getValue());
+		});
+		hHighValue.valueProperty().addListener((Observable o) -> {
+			hFilterBar.setHighValue((double) hHighValue.getValue());
+		});
+		
+		hFilterBar.highValueProperty().addListener((Observable o) -> {
+			hHighValue.setValue(hFilterBar.getHighValue());
+		});
+		hFilterBar.lowValueProperty().addListener((Observable o) -> {
+			hLowValue.setValue(hFilterBar.getLowValue());
+		});
+	}
+	
+	
 	//Panel Sale
 	public void initializeSale() {
 		
@@ -274,49 +496,108 @@ public class MainController implements DraggedScene, Initializable{
 		
 		paymentSale.setValueFactory(salePaymentSpinner);
 		quantitySale.setValueFactory(saleQuantitySpinner);
+	
+		resetSale();
 		
 		Util.fixDoubleSpinner(paymentSale);
 		Util.fixIntSpinner(quantitySale);
-		
-		
+				
 	}
+	
+	
 	public void addProdSale() {
 		Product product = Product.getProduct(idSale.getText());
-		
 		if(product == null) {
 			Util.summonAlert("No existe el product", ERROR, 0);
 			return;
 		}
-
-		Long id = product.getId();
+		
+		String id = product.getId();
 		
 		ObservableList<SaleDetails> list = tableSale.getItems();
 		for(int i = 0; i < list.size(); i++) {
 			SaleDetails details = list.get(i);
-			System.out.println( details.getId_product().equals(id)+" "+ details.getId_product() + " " + id );
 			if(details.getId_product().equals(id)) {
+				if(details.getQuantity() + quantitySale.getValue() > product.getQuantity()) {
+					Util.summonAlert("No hay suficientes existencias", ERROR, 0);
+					return;
+				}
+				
 				details.setQuantity( details.getQuantity() + quantitySale.getValue() );
 				details.setSubtotal( details.getUnit_price() * details.getQuantity() );
 				tableSale.refresh();
+				
+				idSale.setText("");
+				quantitySale.getValueFactory().setValue(1);
+				// update total 
+				double total = tableSale.getItems().stream().mapToDouble(sale -> sale.getSubtotal()).sum();
+				totalCostSale.setText(String.valueOf(total));	
+				ticketPane.setText(Util.generateTicket(tableSale.getItems()));
+				
 				return;
 			}
 		}
 		
+		Integer quantity = quantitySale.getValue();
+		if(quantity > product.getQuantity()) {
+			Util.summonAlert("No hay suficientes existencias", ERROR, 0);
+			return;			
+		}
 		String name = product.getName();
 		Double price = product.getPrice();
-		Integer quantity = quantitySale.getValue();
 		Double subtotal = price * quantity;
 		
 		// Guardamos sale, asignamos el id de retorno a todos los details y despues los guardamos
 		// id de details no se usa 
-		SaleDetails details = new SaleDetails( 0L, 0L, id, quantity, name, price, subtotal);
+		SaleDetails details = new SaleDetails(0L, id, quantity, name, price, subtotal);
 		tableSale.getItems().add(details);
+
+		idSale.setText("");
+		quantitySale.getValueFactory().setValue(1);
+		// update total 
+		double total = tableSale.getItems().stream().mapToDouble(sale -> sale.getSubtotal()).sum();
+		totalCostSale.setText(String.valueOf(total));
+		ticketPane.setText(Util.generateTicket(tableSale.getItems()));
+		
 		
 	}
 	
 	public void finishSale() {
 		
+		if(paymentSale.getValue() < Double.valueOf(totalCostSale.getText()) ) {
+			Util.summonAlert("Ingresar cantidad mayor al costo", ERROR, 0);
+			return;
+		}
+		
+		// crear sale 
+		Sale sale = new Sale( new Date(System.currentTimeMillis()), Double.valueOf(totalCostSale.getText()) );
+		
+		//Asignar id de venta a todos los detalles, guardar el save en db
+		Long id_sale = Sale.save(sale);
+		tableSale.getItems().forEach(details -> details.setId_sale(id_sale));
+		
+		// Guardar details en db 
+		saveDetails();
+		
+		// Reiniciar tabla 
+		resetSale();
+		
+		updateTableSale();
 	}
+	
+	
+	// Reinicia los componentes de la Venta
+	private void resetSale() {
+		tableSale.getItems().clear();
+		totalCostSale.setText("0");
+		paymentSale.getValueFactory().setValue(0.0);
+		quantitySale.getValueFactory().setValue(1);
+		ticketPane.setText("Ingresa Productos para visualizar ticket");
+	}
+	private void saveDetails() {	
+		tableSale.getItems().forEach(details -> SaleDetails.save(details));
+	}
+	
 	
 	// Panel Productos 
 	// Inicializa todos los recursos para el panel de Productos
@@ -354,13 +635,10 @@ public class MainController implements DraggedScene, Initializable{
             			if(empty) {
             				this.setGraphic(null);
             			} else {            		
-            				Button btn = new Button();
-            				Product product = this.getTableView().getItems().get(getIndex());
             				
-            				btn.getStyleClass().add("deleteButton");
-	            			btn.setText("Eliminar");
-	            			btn.setPrefWidth(Double.MAX_VALUE);
-	            			btn.setMaxHeight(tableProducts.getFixedCellSize());
+            				Button btn = Util.createButton("Eliminar", Double.MAX_VALUE, tableProducts.getFixedCellSize(), "deleteButton", "squareNode", "tableButton");
+            				Product product = this.getTableView().getItems().get(getIndex());
+
 	            			btn.setOnAction(e->{
 	            				deleteImage(product.getImagen());
 	            				Product.deleteProduct(product.getId());
@@ -368,9 +646,9 @@ public class MainController implements DraggedScene, Initializable{
 	            				
 	            				searchProducts();
 	            				updateFilterRange();
+	            				updateTableSale();
 	            					
-	            				if(Long.valueOf(idProductDetails.getText()) == product.getId()) {
-	            					tableProducts.getSelectionModel().clearSelection();
+	            				if(idProductDetails.getText() == product.getId()) {
 	            					clearDetailsPane();	            					
 	            				}
 	            				if(tableProducts.getItems().isEmpty()) {
@@ -378,7 +656,6 @@ public class MainController implements DraggedScene, Initializable{
 	            				}
 	            				
 	            			});
-	            			
 	            			
 	            			this.setPadding(Insets.EMPTY);
 	            			this.setGraphic(btn);
@@ -392,9 +669,7 @@ public class MainController implements DraggedScene, Initializable{
 		// Actualiza panel de detalles segun lo seleccionado en la tabla
 		tableProducts.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, product) -> {
 			if(notSelectedProduct.isVisible()) {
-				notSelectedProduct.setVisible(false);
-				selectedProduct.setVisible(true);
-				selectedProduct.setDisable(false);
+				selectedProduct(true);
 			}	
 			if (product != null) {
 				Image image = new Image(product.getImagen());	
@@ -411,8 +686,8 @@ public class MainController implements DraggedScene, Initializable{
 		// Spinners de productos
 		priceSpinner = new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 1000000);
 		quantitySpinner = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000000);
-		newPriceSpinner = new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 1000000, 10);
-		newQuantitySpinner = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000000, 10);
+		newPriceSpinner = new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 1000000);
+		newQuantitySpinner = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000000);
 		
 		quantityProductDetails.setValueFactory(quantitySpinner);
 		priceProductDetails.setValueFactory(priceSpinner);
@@ -464,10 +739,10 @@ public class MainController implements DraggedScene, Initializable{
 		if(id.getText().isBlank()) {
 			errores.add("El id no debe estar vacio");
 			Util.errorHighlight(id);
-		} else if(id.getText().length() != 13) {
+		} else if(id.getText().length() != ID_LENGTH) {
 			errores.add("El id debe tener 13 caracteres");
 			Util.errorHighlight(id);			
-		} else if( Product.exist(Long.valueOf(id.getText())) & !id.equals(idProductDetails) ) {
+		} else if( Product.exist(id.getText()) & !id.equals(idProductDetails) ) {
 			errores.add("ID existente");
 			Util.errorHighlight(id);						
 		}
@@ -475,7 +750,7 @@ public class MainController implements DraggedScene, Initializable{
 		if(name.getText().isBlank()) {
 			errores.add("El nombre no debe estar vacio");
 			Util.errorHighlight(name);
-		} else if(name.getText().length() >= 30) {
+		} else if(name.getText().length() >= MAX_NAME_LENGTH) {
 			errores.add("El nombre debe ser menor a 30 caracteres");
 			Util.errorHighlight(name);			
 		}
@@ -483,7 +758,7 @@ public class MainController implements DraggedScene, Initializable{
 		if(brand.getText().isBlank()) {
 			errores.add("El nombre de la marca no debe estar vacio");
 			Util.errorHighlight(brand);
-		} else if(brand.getText().length() >= 20) {
+		} else if(brand.getText().length() >= MAX_BRAND_LENGTH) {
 			errores.add("La marca debe ser menor a 20 caracteres");
 			Util.errorHighlight(brand);			
 		}
@@ -518,6 +793,12 @@ public class MainController implements DraggedScene, Initializable{
 		return errores.isEmpty();
 	}
 	
+	private void selectedProduct(boolean state) {		
+		notSelectedProduct.setVisible(!state);
+		notSelectedProduct.setDisable(state);
+		selectedProduct.setVisible(state);
+		selectedProduct.setDisable(!state);
+	}
 	private void clearCreateNew() {
 		newProdName.setText("");
 		newPriceSpinner.setValue(0.0);
@@ -530,17 +811,14 @@ public class MainController implements DraggedScene, Initializable{
 		filterProdName.setText("");
 		leftFilterSpinner.setValue(filterRangeBar.getMin());
 		rightFilterSpinner.setValue(filterRangeBar.getMax());
-		filterRangeBar.setHighValue(filterRangeBar.getMax());
 		filterRangeBar.setLowValue(filterRangeBar.getMin());
+		filterRangeBar.setHighValue(filterRangeBar.getMax());
 		filterProdBrand.getCheckModel().clearChecks();
 		updateTableProducts();
 	}
 	private void clearDetailsPane() {
 		tableProducts.getSelectionModel().clearSelection();
-		notSelectedProduct.setVisible(true);
-		notSelectedProduct.setDisable(false);
-		selectedProduct.setVisible(false);
-		selectedProduct.setDisable(true);
+		selectedProduct(false);
 	}
 	
 	// Actualiza los datos de la tabla desde la db
@@ -551,8 +829,7 @@ public class MainController implements DraggedScene, Initializable{
 	// Actualiza los datos de las marcas desde la db
 	private void updateComboBoxes() {
 		ObservableList<String> list = Brand.getAllBrands();
-		filterProdBrand.getItems().clear();
-		filterProdBrand.getItems().addAll(list);
+		filterProdBrand.getItems().setAll(list);
 		newProdBrandCb.setItems(list);
 		brandProductDetails.setItems(list);
 	}
@@ -566,8 +843,8 @@ public class MainController implements DraggedScene, Initializable{
 		filterRangeRight.setValueFactory(rightFilterSpinner);
 		filterRangeBar.setMax(max);
 		filterRangeBar.setMin(min);
-		filterRangeBar.setHighValue(max);
-		filterRangeBar.setLowValue(min);
+//		filterRangeBar.setHighValue(max);
+//		filterRangeBar.setLowValue(min);
 		
 		leftFilterSpinner.valueProperty().addListener((Observable o) -> {
 			filterRangeBar.setLowValue((double) leftFilterSpinner.getValue());
@@ -591,22 +868,18 @@ public class MainController implements DraggedScene, Initializable{
 			searchProducts();
 		}
 		else { 
-			
 			if(validateNewProd(newProdId, newProdName, newPriceSpinner, newProdBrandTxt, newProdView, newProdDetails, newQuantitySpinner)) {
 				String image = saveImage(newProdView);
-				
 				saveProduct(newProdId, newProdName, newPriceSpinner, newProdBrandTxt, image, newProdDetails, newQuantitySpinner);
 				clearCreateNew();				
 			}
-			
 		}
 	}
 	
 	// Filtra los productos tomando los datos seleccionados
 	public void searchProducts(){
-		notSelectedProduct.setVisible(true);
-		selectedProduct.setVisible(false);
-		selectedProduct.setDisable(true);
+		selectedProduct(false);
+
 		String id = filterProdId.getText();
 		String name = filterProdName.getText();
 		Double min = filterRangeBar.getLowValue();
@@ -647,7 +920,7 @@ public class MainController implements DraggedScene, Initializable{
 		if(!Brand.existBrand(brand.getText())) Brand.createBrand(brand.getText());
 
 		Product product = new Product(
-				Long.valueOf(id.getText()),
+				id.getText(),
 				name.getText(),
 				price.getValue(),
 				brand.getText(),
@@ -656,7 +929,6 @@ public class MainController implements DraggedScene, Initializable{
 				quantity.getValue()
 				);
 
-//		product.setId(Product.saveProduct(product));
 		Product.saveProduct(product);
 		
 		clearFilters(); // incluye actualizar tabla
