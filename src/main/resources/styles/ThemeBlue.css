@@ -3,8 +3,9 @@
 	-fx-border-color: #6374ae;
 	-fx-text-fill: #6374ae;
 	-fx-background-insets: 0;
-	
+	-fx-cursor: hand;
 }
+
 * Button:hover{	
 	-fx-background-color: #f2f7fb;
 }
@@ -12,3 +13,14 @@
 #loginPane, .mainBackground{
 	-fx-background-color: linear-gradient(from 100% 100% to 0% 0%, #4a5989, #9cb6dd);		
 }
+
+#menuMainPanel{	
+	-fx-background-color: #414e6e;
+}
+#menuMainPanel Button:hover{	
+	-fx-background-color: #4a5989;
+}
+#menuMainPanel Button{	
+	-fx-border-color: transparent;
+}
+

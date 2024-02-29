@@ -1,0 +1,17 @@
+
+
+#configPane {
+	-fx-background-color: linear-gradient(from 100% 100% to 0% 0%, #4a5989, #9cb6dd);		
+	-fx-border-width: 5px;
+	-fx-border-radius: 5em;
+	-fx-border-insets: -2px;
+	-fx-background-radius: 5em;
+	-fx-border-color: white;
+}
+#configPane * {
+    -fx-font-family: 'Montserrat', 'sans-serif';
+}
+
+.checkConfig:hover, .checkConfig:selected, .checkConfig:focused, .checkConfig:indeterminate, .checkConfig:determinate{
+	-fx-font-size: 15px
+}

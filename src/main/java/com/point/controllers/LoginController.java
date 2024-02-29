@@ -66,7 +66,13 @@ public class LoginController implements DraggedScene, Initializable {
 			} 
 			if(Database.verifyPassword(loginPassword.getText(), result.getString("password"))) {
 				MainController controller = (MainController)IndexApp.setRoot("main", "main");
-				controller.setActualAdmin(loginUsername.getText());
+				controller.setActualAdmin(new Admin(
+						result.getInt("id"),
+						result.getString("first_name"),
+						result.getString("last_name"),
+						result.getString("username"),
+						result.getString("password")
+						));
 			} else {
 				alert.setContentText("Contraseña Incorrecta");
 				alert.showAndWait();

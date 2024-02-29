@@ -1,6 +1,7 @@
 package com.point;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,8 +11,13 @@ import javafx.stage.StageStyle;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+import com.point.controllers.MainController;
 import com.point.database.Database;
+import com.point.models.Admin;
+import com.point.models.Configuration;
 
 
 public class IndexApp extends Application {
@@ -21,9 +27,27 @@ public class IndexApp extends Application {
     @Override
     public void start(Stage s) throws IOException {
         stage=s;
-        stage.setResizable(false);
+        stage.setResizable(true);
         stage.initStyle(StageStyle.UNDECORATED); // Esto quita la barra de título y los botones de cerrar, minimizar y maximizar
-        setRoot("login","");
+        
+        if(!Configuration.getConfig(1).isSkipSession()) {
+        	setRoot("login","");        	
+        }else {
+			ResultSet result = Admin.get("root");
+        	MainController controller = (MainController)IndexApp.setRoot("main", "main");
+        	try {
+				controller.setActualAdmin(new Admin(
+						result.getInt("id"),
+						result.getString("first_name"),
+						result.getString("last_name"),
+						result.getString("username"),
+						result.getString("password")
+						));
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}        	        	
+        }
+		
     }
 
     
@@ -35,10 +59,10 @@ public class IndexApp extends Application {
     public static Object setRoot(String fxml, String title) throws IOException {
     	
     	FXMLLoader fxmlLoader = new FXMLLoader(IndexApp.class.getClassLoader().getResource("fxml/" + fxml + ".fxml"));
-
+    	
     	Parent root = fxmlLoader.load();
     	Scene scene = new Scene(root);
-    
+    	
     	setTheme(root);
     	
     	stage.setTitle(title);

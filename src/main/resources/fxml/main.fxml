@@ -766,7 +766,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button mnemonicParsing="false">
+                        <Button fx:id="configurationButton" mnemonicParsing="false" onAction="#openConfig">
                            <styleClass>
                               <String fx:value="aditionalOptions" />
                               <String fx:value="menuButton" />

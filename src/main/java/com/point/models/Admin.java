@@ -9,6 +9,7 @@ import com.point.database.Database;
 
 public class Admin {
 
+	int id;
 	String firstName;
 	String lastName;
 	String userName;
@@ -24,7 +25,8 @@ public class Admin {
 	 * @param userName
 	 * @param password
 	 */
-	public Admin(String firstName, String lastName, String userName, String password) {
+	public Admin(int id, String firstName, String lastName, String userName, String password) {
+		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.userName = userName;
@@ -42,7 +44,7 @@ public class Admin {
 		connect = Database.getConnect();
 
 		try {
-			statement = connect.prepareStatement("SELECT password FROM admin WHERE username = ?");
+			statement = connect.prepareStatement("SELECT * FROM admin WHERE username = ?");
 			statement.setString(1, username);
 			result = statement.executeQuery(); 
 			if(result.next()) return result;			
@@ -70,35 +72,39 @@ public class Admin {
 		
 	}
 	
-	String getFirstName() {
+	public int getId() {
+		return id;
+	}
+	
+	public String getFirstName() {
 		return firstName;
 	}
 
-	void setFirstName(String firstName) {
+	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 
-	String getLastName() {
+	public String getLastName() {
 		return lastName;
 	}
 
-	void setLastName(String lastName) {
+	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
 
-	String getUserName() {
+	public String getUserName() {
 		return userName;
 	}
 
-	void setUserName(String userName) {
+	public void setUserName(String userName) {
 		this.userName = userName;
 	}
 
-	String getPassword() {
+	public String getPassword() {
 		return password;
 	}
 
-	void setPassword(String password) {
+	public void setPassword(String password) {
 		this.password = password;
 	}
 

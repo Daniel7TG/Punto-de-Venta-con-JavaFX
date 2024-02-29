@@ -23,11 +23,13 @@ import org.controlsfx.control.tableview2.TableView2;
 import org.controlsfx.control.textfield.CustomPasswordField;
 import org.controlsfx.control.textfield.CustomTextField;
 
+import com.point.IndexApp;
 import com.point.Util;
 import com.point.database.Database;
 import com.point.interfaces.DraggedScene;
 import com.point.models.Admin;
 import com.point.models.Brand;
+import com.point.models.Configuration;
 import com.point.models.Product;
 import com.point.models.Sale;
 import com.point.models.SaleDetails;
@@ -39,10 +41,13 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableListBase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -77,6 +82,7 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.util.Duration;
 
@@ -179,7 +185,7 @@ public class MainController implements DraggedScene, Initializable{
 
 	@FXML
 	Button menuLeftMove,
-	newSaleButton, newAdminButton, newProductButton, historyButton,
+	newSaleButton, newAdminButton, newProductButton, historyButton, configurationButton,
 	changeProductButton,
 	newProdImage,
 	confirmProdButton,
@@ -231,7 +237,7 @@ public class MainController implements DraggedScene, Initializable{
 	, hLowValue, hHighValue;
 	private SpinnerValueFactory<Integer> quantitySpinner, newQuantitySpinner, saleQuantitySpinner;
 	private final FileChooser fileChooser = new FileChooser();	
-	private String username;
+	private Admin user;
 
 	// Sale Panel
 	private String ticket;
@@ -241,7 +247,7 @@ public class MainController implements DraggedScene, Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		Util.initialize(contentMain, menuPaneAnchor);
 		
-		onDraggedScene(topPanel);		
+		onDraggedScene(appPane);		
 
 		initializeProducts();	
 		initializeSale();
@@ -250,8 +256,44 @@ public class MainController implements DraggedScene, Initializable{
 	
 	
 
+	public void openConfig() {
+		FXMLLoader fxmlLoader = new FXMLLoader(MainController.class.getClassLoader().getResource("fxml/configuration.fxml"));
+    	Parent root;
+		try {
+			
+			root = fxmlLoader.load();
+			((ConfigurationController)fxmlLoader.getController()).loadConfig(user.getId());
 
+			Scene scene = new Scene(root);    
+			Stage stageConfig = new Stage();
+		
+			scene.setFill(Color.TRANSPARENT);
+	        stageConfig.setResizable(false);
+	        stageConfig.initStyle(StageStyle.TRANSPARENT);
+			stageConfig.setScene(scene);
+			stageConfig.centerOnScreen();
+			
+			checkStage();			
+			stage.setOnHiding(e->{
+				stageConfig.close();
+			});
+		
+			configurationButton.setDisable(true);
+			stageConfig.showAndWait();
+			configurationButton.setDisable(false);
 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	
+	public void loadConfig(Configuration config) {
+		
+		
+	}
+	
+	
 	// Acciones de la barra superior
 	public void maximizeApp() {
 		checkStage();
@@ -346,13 +388,13 @@ public class MainController implements DraggedScene, Initializable{
 			return;
 		}
 
-		if(username.equals(usernameNew.getText()) | Admin.get(usernameNew.getText()) != null) {
+		if(user.getUserName().equalsIgnoreCase(usernameNew.getText()) | Admin.get(usernameNew.getText()) != null) {
 			Util.summonAlert("Usuario existente", ERROR, 0);
 			Util.errorHighlight(usernameNew);
 			return;
 		}
 				
-		result = Admin.get(username);
+		result = Admin.get(user.getUserName());
 		try {
 			if(Database.verifyPassword(passwordActual.getText(), result.getString("password"))) {
 				Util.summonAlert("Admin Registrado", SUCCESS, 0);
@@ -367,9 +409,9 @@ public class MainController implements DraggedScene, Initializable{
 		
 		
 	}
-	public void setActualAdmin(String username) {
-		this.username = username;
-		usernameActual.setText(username);
+	public void setActualAdmin(Admin user) {
+		this.user = user;
+		usernameActual.setText(user.getUserName());
 	}
 	
 	
