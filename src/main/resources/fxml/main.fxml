@@ -753,7 +753,7 @@
                   </Button>
                   <HBox alignment="BOTTOM_LEFT" maxHeight="1.7976931348623157E308" styleClass="widthLeftPanel" VBox.vgrow="ALWAYS">
                      <children>
-                        <Button mnemonicParsing="false">
+                        <Button mnemonicParsing="false" onAction="#openProfile">
                            <styleClass>
                               <String fx:value="aditionalOptions" />
                               <String fx:value="menuButton" />

@@ -83,5 +83,11 @@ public class LoginController implements DraggedScene, Initializable {
 		}
 		
 	}
+	
+	
+	public void preSetUsername(String username) {
+		this.loginUsername.setText(username);
+	}
+	
 
 }

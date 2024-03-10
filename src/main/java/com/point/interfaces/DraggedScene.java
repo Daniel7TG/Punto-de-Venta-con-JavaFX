@@ -2,6 +2,7 @@ package com.point.interfaces;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import javafx.scene.Cursor;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -23,7 +24,7 @@ public interface DraggedScene {
             stage.setX(e.getScreenX() + xOffset.get());
             stage.setY(e.getScreenY() + yOffset.get());
             stage.setOpacity(0.8);
-            panelFather.setStyle("-fx-cursor: CLOSED_HAND;");
+            panelFather.setCursor(Cursor.CLOSED_HAND);
             if(stage.isMaximized()) {
             	stage.setMaximized(false);
             }
@@ -31,7 +32,7 @@ public interface DraggedScene {
 
         panelFather.setOnMouseReleased(e -> {        	
         	Stage stage = (Stage) panelFather.getScene().getWindow();
-	        panelFather.setStyle("-fx-cursor: DEFAULT;");
+        	panelFather.setCursor(Cursor.DEFAULT);
 	        stage.setOpacity(1);
         });
 

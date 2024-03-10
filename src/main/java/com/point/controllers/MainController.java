@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -229,15 +230,16 @@ public class MainController implements DraggedScene, Initializable{
 	ERROR = {Color.web("d46e73", 0.9), Color.web("#a1131a")};
 	
 	// Products Panel
-	private final String DEFAULT_IMAGE = MainController.class.getResource("/img/default.jpg").toString(); 
+	public static final String DEFAULT_IMAGE = MainController.class.getResource("/img/default.jpg").toString(); 
 
-	private final Path IMAGE_PATH = Paths.get("img");
+	private final Path IMAGE_PATH = Paths.get("resources/img");
 
 	private SpinnerValueFactory<Double> priceSpinner, newPriceSpinner, leftFilterSpinner, rightFilterSpinner, salePaymentSpinner
 	, hLowValue, hHighValue;
 	private SpinnerValueFactory<Integer> quantitySpinner, newQuantitySpinner, saleQuantitySpinner;
 	private final FileChooser fileChooser = new FileChooser();	
 	private Admin user;
+	private Configuration config;
 
 	// Sale Panel
 	private String ticket;
@@ -246,13 +248,18 @@ public class MainController implements DraggedScene, Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		Util.initialize(contentMain, menuPaneAnchor);
+		loadConfig();
 		
-		onDraggedScene(appPane);		
-
+		onDraggedScene(topPanel);		
+		
+		
+		
 		initializeProducts();	
 		initializeSale();
 		initializeHistory();
 	}
+	
+	
 	
 	
 
@@ -262,7 +269,7 @@ public class MainController implements DraggedScene, Initializable{
 		try {
 			
 			root = fxmlLoader.load();
-			((ConfigurationController)fxmlLoader.getController()).loadConfig(user.getId());
+			((ConfigurationController)fxmlLoader.getController()).setUsername(user.getUserName());
 
 			Scene scene = new Scene(root);    
 			Stage stageConfig = new Stage();
@@ -281,18 +288,64 @@ public class MainController implements DraggedScene, Initializable{
 			configurationButton.setDisable(true);
 			stageConfig.showAndWait();
 			configurationButton.setDisable(false);
-
+			Configuration.loadConfig();
+			loadConfig();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	
-	public void loadConfig(Configuration config) {
+	public void loadConfig() {
+		config = Configuration.getConfig();		
 		
-		
+		if(config.isAutoProducts()) {
+			idSale.setOnKeyTyped(e->{
+				if(idSale.getText().length() == 13) {
+					addProdSale();
+				}
+			});			
+		} else {
+			idSale.setOnKeyTyped(null);
+		}
+		Util.fixIntSpinner(quantitySale, config.getSaleDefAmount());
+		saleQuantitySpinner = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000000, config.getSaleDefAmount(), 1);
+		quantitySale.setValueFactory(saleQuantitySpinner);
 	}
 	
+	
+	public void openProfile() {
+		String link = "www.linkedin.com/in/oscar-daniel-torres-guido-ab3740242";
+		try {
+			abriNavegador(link);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	//NAVEGADOR POR DEFECTO POR SISTEMA
+	public void abrirNavegadorPredeterminadorWindows(String url) throws IOException{
+		Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+	}
+	public void abrirNavegadorPredeterminadorLinux(String url) throws IOException{
+		Runtime.getRuntime().exec("xdg-open " + url);
+	}
+	public void abrirNavegadorPredeterminadorMacOsx(String url) throws IOException{
+		Runtime.getRuntime().exec("open " + url);
+	}
+
+	//NAVEGADOR POR DEFECTO GENERICO
+	public void abriNavegador(String url) throws IOException{
+		String osName = System.getProperty("os.name");
+		if(osName.contains("Windows"))
+			abrirNavegadorPredeterminadorWindows(url);
+		else if(osName.contains("Linux"))
+			abrirNavegadorPredeterminadorLinux(url);
+		else if(osName.contains("Mac OS X"))
+			abrirNavegadorPredeterminadorMacOsx(url);
+
+	}
+
 	
 	// Acciones de la barra superior
 	public void maximizeApp() {
@@ -480,7 +533,6 @@ public class MainController implements DraggedScene, Initializable{
 		Double min = hFilterBar.getLowValue();
 		Double max = hFilterBar.getHighValue();
 		historyTable.setItems(Sale.get(date, min, max));
-		System.out.println("a");
 	}
 	
 	
@@ -534,16 +586,21 @@ public class MainController implements DraggedScene, Initializable{
 		columnTotalSale.setCellValueFactory(new PropertyValueFactory<SaleDetails, Double>("subtotal"));	
 		
 		salePaymentSpinner = new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 1000000);
-		saleQuantitySpinner = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000000);
+//		saleQuantitySpinner = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000000);
 		
 		paymentSale.setValueFactory(salePaymentSpinner);
-		quantitySale.setValueFactory(saleQuantitySpinner);
 	
 		resetSale();
 		
 		Util.fixDoubleSpinner(paymentSale);
-		Util.fixIntSpinner(quantitySale);
-				
+		Util.fixTextField(idSale);
+
+	}
+	
+	
+	public void resetAddProd() {
+		idSale.setText("");
+		saleQuantitySpinner.setValue(config.getSaleDefAmount());
 	}
 	
 	
@@ -551,6 +608,7 @@ public class MainController implements DraggedScene, Initializable{
 		Product product = Product.getProduct(idSale.getText());
 		if(product == null) {
 			Util.summonAlert("No existe el product", ERROR, 0);
+			resetAddProd();
 			return;
 		}
 		
@@ -562,27 +620,31 @@ public class MainController implements DraggedScene, Initializable{
 			if(details.getId_product().equals(id)) {
 				if(details.getQuantity() + quantitySale.getValue() > product.getQuantity()) {
 					Util.summonAlert("No hay suficientes existencias", ERROR, 0);
+					resetAddProd();
 					return;
 				}
 				
+				// Producto ya existia y si hay existencias
 				details.setQuantity( details.getQuantity() + quantitySale.getValue() );
 				details.setSubtotal( details.getUnit_price() * details.getQuantity() );
 				tableSale.refresh();
 				
-				idSale.setText("");
-				quantitySale.getValueFactory().setValue(1);
 				// update total 
 				double total = tableSale.getItems().stream().mapToDouble(sale -> sale.getSubtotal()).sum();
 				totalCostSale.setText(String.valueOf(total));	
 				ticketPane.setText(Util.generateTicket(tableSale.getItems()));
 				
+				resetAddProd();
 				return;
 			}
 		}
+
+		// Producto aun no existe 
 		
 		Integer quantity = quantitySale.getValue();
 		if(quantity > product.getQuantity()) {
 			Util.summonAlert("No hay suficientes existencias", ERROR, 0);
+			resetAddProd();
 			return;			
 		}
 		String name = product.getName();
@@ -594,13 +656,12 @@ public class MainController implements DraggedScene, Initializable{
 		SaleDetails details = new SaleDetails(0L, id, quantity, name, price, subtotal);
 		tableSale.getItems().add(details);
 
-		idSale.setText("");
-		quantitySale.getValueFactory().setValue(1);
 		// update total 
 		double total = tableSale.getItems().stream().mapToDouble(sale -> sale.getSubtotal()).sum();
 		totalCostSale.setText(String.valueOf(total));
 		ticketPane.setText(Util.generateTicket(tableSale.getItems()));
 		
+		resetAddProd();
 		
 	}
 	
@@ -633,7 +694,7 @@ public class MainController implements DraggedScene, Initializable{
 		tableSale.getItems().clear();
 		totalCostSale.setText("0");
 		paymentSale.getValueFactory().setValue(0.0);
-		quantitySale.getValueFactory().setValue(1);
+		resetAddProd();
 		ticketPane.setText("Ingresa Productos para visualizar ticket");
 	}
 	private void saveDetails() {	
@@ -690,7 +751,7 @@ public class MainController implements DraggedScene, Initializable{
 	            				updateFilterRange();
 	            				updateTableSale();
 	            					
-	            				if(idProductDetails.getText() == product.getId()) {
+	            				if(idProductDetails.getText().equals(product.getId()) ) {
 	            					clearDetailsPane();	            					
 	            				}
 	            				if(tableProducts.getItems().isEmpty()) {
@@ -751,9 +812,9 @@ public class MainController implements DraggedScene, Initializable{
 		});
 		
 		
-		Util.fixIntSpinner(newProdQuantity);
+		Util.fixIntSpinner(newProdQuantity, 10);
 		Util.fixDoubleSpinner(newProdPrice);
-		Util.fixIntSpinner(quantityProductDetails);
+		Util.fixIntSpinner(quantityProductDetails, 0);
 		Util.fixDoubleSpinner(priceProductDetails);
 		
 		Util.fixDoubleSpinner(filterRangeLeft);
@@ -778,6 +839,45 @@ public class MainController implements DraggedScene, Initializable{
 		ArrayList<String> errores = new ArrayList<String>();
 		ArrayList<String> alertas = new ArrayList<String>();
 		
+		
+		getErrores(id, name, brand, errores);
+
+		for(int i = 0; i < errores.size(); i++) {
+			Util.summonAlert(errores.get(i), ERROR, i);
+		}
+		if(!errores.isEmpty()) {
+			return errores.isEmpty();
+		}
+		
+		if(config.isActivateAlerts()) {
+			getAlerts(price, image, details, quantity, alertas);
+			for(int i = 0; i < alertas.size(); i++) {
+				Util.summonAlert(alertas.get(i), ALERT, i);
+			}			
+		}
+		if(alertas.isEmpty()) {
+			Util.summonAlert("Producto guardado Correctamente", SUCCESS, 0);
+		}
+		
+		return errores.isEmpty();
+	}
+	
+	public void getAlerts(SpinnerValueFactory<Double> price, ImageView image, TextArea details, SpinnerValueFactory<Integer> quantity, List<String> alertas) {
+		if(price.getValue() == 0) {
+			alertas.add("Guardado con precio de 0");
+		}
+		if(quantity.getValue() == 0) {
+			alertas.add("Guardado con cantidad de 0");
+		}
+		if(image.getImage().getUrl().equals(DEFAULT_IMAGE)) {
+			alertas.add("Guardado sin imagen");
+		}
+		if(details.getText().isBlank()) {
+			alertas.add("Guardado sin detalles");			
+		}
+	}
+	
+	public void getErrores(CustomTextField id, CustomTextField name, CustomTextField brand, List<String> errores) {
 		if(id.getText().isBlank()) {
 			errores.add("El id no debe estar vacio");
 			Util.errorHighlight(id);
@@ -804,36 +904,8 @@ public class MainController implements DraggedScene, Initializable{
 			errores.add("La marca debe ser menor a 20 caracteres");
 			Util.errorHighlight(brand);			
 		}
-	
-		if(price.getValue() == 0) {
-			alertas.add("Guardado con precio de 0");
-		}
-		if(quantity.getValue() == 0) {
-			alertas.add("Guardado con cantidad de 0");
-		}
-		if(image.getImage().getUrl().equals(DEFAULT_IMAGE)) {
-			alertas.add("Guardado sin imagen");
-		}
-		if(details.getText().isBlank()) {
-			alertas.add("Guardado sin detalles");			
-		}
-		
-		for(int i = 0; i < errores.size(); i++) {
-			Util.summonAlert(errores.get(i), ERROR, i);
-			}
-		if(!errores.isEmpty()) {
-			return errores.isEmpty();
-		}
-		
-		for(int i = 0; i < alertas.size(); i++) {
-			Util.summonAlert(alertas.get(i), ALERT, i);
-		}
-		if(alertas.isEmpty()) {
-			Util.summonAlert("Producto guardado Correctamente", SUCCESS, 0);
-		}
-		
-		return errores.isEmpty();
 	}
+	
 	
 	private void selectedProduct(boolean state) {		
 		notSelectedProduct.setVisible(!state);

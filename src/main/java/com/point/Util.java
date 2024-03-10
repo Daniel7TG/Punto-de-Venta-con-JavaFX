@@ -133,12 +133,10 @@ public class Util {
 		else {
 //			int restante = middle - textoLeft.length();
 			finalText = String.format( ("%-" + (middle + 2) + "s"), textoLeft.toString());
-			System.out.println("!" + String.format( ("%-" + (middle + 2) + "s"), textoLeft.toString()) + "!");
 		}		
 		
 		finalText += String.format("%" + (middle-2) + "s", "$" + details.getSubtotal()) + "\n";
 
-		System.out.println("!" + String.format("%" + (middle-2) + "s", "$" + details.getSubtotal()) + "!");
 		
 		return finalText;	
 	}
@@ -161,7 +159,6 @@ public class Util {
 			return Path.of(new URI(url));
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-			System.out.println("error en GetPath");
 		}
 		return null;
 	}
@@ -283,9 +280,9 @@ public class Util {
 	}
 	
 
-	public static void fixIntSpinner(Spinner<Integer> spinner) {		
+	public static void fixIntSpinner(Spinner<Integer> spinner, int defaultValue) {		
 		spinner.getEditor().setTextFormatter(
-		    new TextFormatter<Integer>(new IntegerStringConverter(), 1, integerFilter));
+		    new TextFormatter<Integer>(new IntegerStringConverter(), defaultValue, integerFilter));
 	}
 	public static void fixDoubleSpinner(Spinner<Double> spinner) {		
 		spinner.getEditor().setTextFormatter(

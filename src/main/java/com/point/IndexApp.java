@@ -14,6 +14,7 @@ import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.point.controllers.LoginController;
 import com.point.controllers.MainController;
 import com.point.database.Database;
 import com.point.models.Admin;
@@ -30,11 +31,9 @@ public class IndexApp extends Application {
         stage.setResizable(true);
         stage.initStyle(StageStyle.UNDECORATED); // Esto quita la barra de título y los botones de cerrar, minimizar y maximizar
         
-        if(!Configuration.getConfig(1).isSkipSession()) {
-        	setRoot("login","");        	
-        }else {
-			ResultSet result = Admin.get("root");
+        if(Configuration.getConfig().isSkipSession()) {
         	MainController controller = (MainController)IndexApp.setRoot("main", "main");
+        	ResultSet result = Admin.get(Configuration.getConfig().getRememberUser());
         	try {
 				controller.setActualAdmin(new Admin(
 						result.getInt("id"),
@@ -43,10 +42,9 @@ public class IndexApp extends Application {
 						result.getString("username"),
 						result.getString("password")
 						));
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}        	        	
+			} catch (SQLException e) {}
         }
+        else setRoot("login","");        	
 		
     }
 
@@ -59,9 +57,11 @@ public class IndexApp extends Application {
     public static Object setRoot(String fxml, String title) throws IOException {
     	
     	FXMLLoader fxmlLoader = new FXMLLoader(IndexApp.class.getClassLoader().getResource("fxml/" + fxml + ".fxml"));
-    	
     	Parent root = fxmlLoader.load();
     	Scene scene = new Scene(root);
+    	
+    	if(Configuration.getConfig().getRememberUser() != ""  & fxml.equals("login")) 
+    		((LoginController)fxmlLoader.getController()).preSetUsername(Configuration.getConfig().getRememberUser());
     	
     	setTheme(root);
     	
@@ -80,7 +80,6 @@ public class IndexApp extends Application {
 
     
     public static void main(String[] args) {
-    	Database.connection(); 	
         launch(args);
     } 
     

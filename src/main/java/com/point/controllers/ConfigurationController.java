@@ -29,6 +29,8 @@ public class ConfigurationController implements Initializable, DraggedScene {
 	
 	public int adminId;
 	SpinnerValueFactory<Integer> spinnerValue;
+	private String username;
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		onDraggedScene(configPane);
@@ -37,16 +39,15 @@ public class ConfigurationController implements Initializable, DraggedScene {
 		confSellAmount.setValueFactory(spinnerValue);
 		
 		confTheme.setItems(FXCollections.observableArrayList("BlueTheme", "nothing"));
-		
+		loadConfig();
 	}
 	
-	public void loadConfig(int adminId) {
-		System.out.println(adminId);
-		this.adminId = adminId;
-		Configuration config = Configuration.getConfig(adminId);
+	public void loadConfig() {
+	
+		Configuration config = Configuration.getConfig();
 		confTheme.getSelectionModel().select(config.getTheme());
 		confSkipSession.setSelected(config.isSkipSession());
-		confRemUser.setSelected(config.isRememberUser());
+		confRemUser.setSelected(!config.getRememberUser().equals(""));
 		confAutoProd.setSelected(config.isAutoProducts());
 		confAlerts.setSelected(config.isActivateAlerts());
 		confSellAmount.getValueFactory().setValue(config.getSaleDefAmount());
@@ -64,15 +65,19 @@ public class ConfigurationController implements Initializable, DraggedScene {
 		Configuration config = new Configuration(
 				confTheme.getSelectionModel().getSelectedItem(),
 				confSkipSession.isSelected(),
-				confRemUser.isSelected(),
+				confRemUser.isSelected() ? username : "",
 				confAutoProd.isSelected(),
 				confAlerts.isSelected(),
-				confSellAmount.getValue(),
-				adminId
+				confSellAmount.getValue()
 				);
-		Configuration.updateConfig(config);
+		Configuration.saveConfig(config);
 		
+		closeConfig();
 	}
 	
+	
+	public void setUsername(String username) {
+		this.username = username;
+	}
 	
 }
