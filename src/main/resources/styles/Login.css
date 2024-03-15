@@ -1,0 +1,39 @@
+#loginPane, #loginPane *{
+    -fx-background: linear-gradient(from 100% 100% to 0% 0%, rgba(108, 95, 200), rgba(48, 30, 109));	
+    -fx-font-family: 'Montserrat', 'sans-serif';
+	
+}
+#loginPane .label {
+    -fx-text-fill: white; 
+}
+#loginLeftPane{
+	-fx-background-color: rgba(0, 0, 0, 0.5);
+	-fx-border-width: 5px 5px 5px 0;	
+	-fx-border-color: white;
+	-fx-border-radius: 0 50% 50% 0px;
+	-fx-background-radius: 0 50% 50% 0px ;
+	-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 60, 0.3, 15.0, 0.0);
+}
+* .loginTextField{
+	-fx-background-color: rgba(0, 0, 0, 0.2);
+	-fx-border-color: white;
+	-fx-border-width: 0.7px;
+	-fx-border-radius: 7px;
+	-fx-background-radius: 7px;
+	-fx-font-size: 15px;
+	-fx-text-fill: white; 	
+}
+.loginTextField:focused{
+	-fx-background-color: rgba(0, 0, 0, 0.1);
+	-fx-border-width: 1.4px;	
+}
+#loginButton{
+	-fx-font-size: 30px;
+	-fx-cursor: hand;
+	-fx-background-color: rgba(255, 255, 255, 0.2);
+	-fx-background-radius: 50px;
+}
+#loginButton:hover, #loginButton:focused {
+	-fx-background-color: rgba(255, 255, 255, 0.5);		
+}
+

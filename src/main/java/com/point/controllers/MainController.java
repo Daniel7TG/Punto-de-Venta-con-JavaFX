@@ -128,8 +128,6 @@ public class MainController implements DraggedScene, Initializable{
 	@FXML 
 	RangeSlider hFilterBar;
 	@FXML
-	Button hConfirmFilter;
-	@FXML
 	DatePicker hFilterDate;
 
 	
@@ -273,7 +271,10 @@ public class MainController implements DraggedScene, Initializable{
 
 			Scene scene = new Scene(root);    
 			Stage stageConfig = new Stage();
-		
+			
+			IndexApp.setStyles(root);
+			IndexApp.setTheme(root, IndexApp.GLOBAL);
+			
 			scene.setFill(Color.TRANSPARENT);
 	        stageConfig.setResizable(false);
 	        stageConfig.initStyle(StageStyle.TRANSPARENT);
@@ -494,8 +495,10 @@ public class MainController implements DraggedScene, Initializable{
             			if(empty) {
             				this.setGraphic(null);
             			} else {            		
-            				Button btnDelete = Util.createButton("Borrar", hActionColumn.getPrefWidth() / 3, HEIGHT_TABLEBTN, "deleteButton", "tableButton");
-            				Button btnDetails = Util.createButton("Detalles", hActionColumn.getPrefWidth() / 3, HEIGHT_TABLEBTN, "detailsButton", "tableButton");
+            				Button btnDelete = Util.createButton("Borrar", hActionColumn.getPrefWidth() / 3, HEIGHT_TABLEBTN,
+            						"deleteButton", "tableButton", "radButton");
+            				Button btnDetails = Util.createButton("Detalles", hActionColumn.getPrefWidth() / 3, HEIGHT_TABLEBTN,
+            						"detailsButton", "tableButton", "radButton");
 
             				Sale sale = this.getTableView().getItems().get(getIndex());
             				
@@ -957,8 +960,8 @@ public class MainController implements DraggedScene, Initializable{
 		filterRangeRight.setValueFactory(rightFilterSpinner);
 		filterRangeBar.setMax(max);
 		filterRangeBar.setMin(min);
-//		filterRangeBar.setHighValue(max);
-//		filterRangeBar.setLowValue(min);
+		filterRangeBar.setHighValue(max);
+		filterRangeBar.setLowValue(min);
 		
 		leftFilterSpinner.valueProperty().addListener((Observable o) -> {
 			filterRangeBar.setLowValue((double) leftFilterSpinner.getValue());

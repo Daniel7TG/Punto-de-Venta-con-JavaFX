@@ -1,0 +1,15 @@
+* Button,
+* .spinner .increment-arrow-button,
+* .spinner .decrement-arrow-button,
+* .check-box > .box {
+	-fx-background-insets: 0;
+	-fx-cursor: hand;
+}
+* .check-box > .box {
+    -fx-background-radius: 0;
+}
+
+* Label{
+	-fx-font-family: 'Montserrat', 'sans-serif';
+}
+

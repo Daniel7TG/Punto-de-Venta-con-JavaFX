@@ -8,11 +8,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="loginPane" fx:id="loginPane" maxHeight="500.0" maxWidth="820.0" minHeight="500.0" minWidth="820.0" prefHeight="500.0" prefWidth="820.0" stylesheets="@../styles/Styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.point.controllers.LoginController">
+<AnchorPane id="loginPane" fx:id="loginPane" maxHeight="500.0" maxWidth="820.0" minHeight="500.0" minWidth="820.0" prefHeight="500.0" prefWidth="820.0" stylesheets="@../styles/Login.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.point.controllers.LoginController">
     <children>
       <TextField fx:id="loginUsername" layoutX="461.0" layoutY="225.0" prefHeight="35.0" prefWidth="340.0" styleClass="loginTextField" />
       <PasswordField fx:id="loginPassword" layoutX="461.0" layoutY="291.0" prefHeight="35.0" prefWidth="340.0" styleClass="loginTextField" />
-        <Button id="loginButton" fx:id="loginButton" layoutX="373.0" layoutY="385.0" onAction="#login" prefHeight="82.0" prefWidth="358.0" text="Enviar">
+        <Button style="-fx-border-width: 0px" id="loginButton" fx:id="loginButton" layoutX="373.0" layoutY="385.0" onAction="#login" prefHeight="82.0" prefWidth="358.0" text="Enviar">
          <font>
             <Font size="25.0" />
          </font></Button>

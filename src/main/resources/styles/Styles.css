@@ -1,238 +1,133 @@
 * {
 	width-left-main-panel: 300px;
+}
 
-	
+/* Botones */
+.button{
+	/* size & font */	
+}
+.radButton{
+	-fx-border-radius: 5;
+	-fx-background-radius: 5;
+}
+.noRadButton{
+	-fx-border-radius: 0;
+	-fx-background-radius: 0;
+}
+* .tableButton{
+	-fx-border-width: 0;
+	-fx-font-size: 9.3px;
+	-fx-text-fill: white;	
+}
+
+* .deleteButton{
+	-fx-background-color: #7e002e;
+}
+* .deleteButton:hover{
+	-fx-background-color: #990037;
+}
+* .detailsButton{
+	-fx-background-color: #e7bd29;	
+}
+* .detailsButton:hover{
+	-fx-background-color: #f5c92b;	
 }
 
 
+/* Paneles */
+* .panelGeneral {
+	-fx-background-color: white;
+	-fx-border-radius: 10px;
+	-fx-background-radius: 10px;	
+	-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, .1, 10.0, 10.0);
+}
 
+
+/*      */
+/* MAIN */
+/*      */
+
+/* Barra opciones */
 .topBarButton{
 	-fx-pref-width: 45px;
 	-fx-pref-height: 25px;		
 	-fx-border-color: TRANSPARENT;
 }
-.alert {
-	-fx-border-radiud: 10;
-}
 
-
-#loginPane, #loginPane *{
-    -fx-background: linear-gradient(from 100% 100% to 0% 0%, rgba(108, 95, 200), rgba(48, 30, 109));	
-    -fx-font-family: 'Montserrat', 'sans-serif';
-	
-}
-#loginPane .label {
-    -fx-text-fill: white; 
-}
-#loginLeftPane{
-	-fx-background-color: rgba(0, 0, 0, 0.5);
-	-fx-border-width: 5px 5px 5px 0;	
-	-fx-border-color: white;
-	-fx-border-radius: 0 50% 50% 0px;
-	-fx-background-radius: 0 50% 50% 0px ;
-	-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 60, 0.3, 15.0, 0.0);
-}
-.loginTextField{
-	-fx-background-color: rgba(0, 0, 0, 0.2);
-	-fx-border-color: white;
-	-fx-border-width: 0.7px;
-	-fx-border-radius: 7px;
-	-fx-background-radius: 7px;
-	-fx-font-size: 15px;
-	-fx-text-fill: white; 	
-}
-.loginTextField:focused{
-	-fx-background-color: rgba(0, 0, 0, 0.1);
-	-fx-border-width: 1.4px;	
-}
-#loginButton{
-	-fx-font-size: 30px;
-	-fx-cursor: hand;
-	-fx-background-color: rgba(255, 255, 255, 0.2);
-	-fx-background-radius: 50px;
-}
-#loginButton:hover, #loginButton:focused {
-	-fx-background-color: rgba(255, 255, 255, 0.5);		
-}
-
-.mainBackground{	
-	-fx-background-color: linear-gradient(from 100% 100% to 0% 0%, rgba(108, 95, 200, 0.95), rgba(48, 30, 109, 0.95));		
-}
+/*Left panel */
 .widthLeftPanel{	
 	-fx-min-width: width-left-main-panel;
 	-fx-max-width: width-left-main-panel;
 }
-#menuMainPanel{	
-	-fx-background-color: #1a1436;
-}
-
 .menuButton, .topBarButton{
 	-fx-background-color: TRANSPARENT;
-	/*-fx-border-color: white;*/
 	-fx-text-fill: white;
 	-fx-text-style: bold;
 	-fx-cursor: hand;	
-}
-.menuButton:hover{
-	-fx-background-color: #271e52;
 }
 .menuButton:hover > topBarButton:hover{
 	-fx-background-color: rgba(255, 255, 255, 0.1);	
 }
 .menuOptionButton{
 	-fx-padding: 20px 0 20px 20px;
-	-fx-alignment: top-left;
 	-fx-font-size: 20px;
 }
-
 .aditionalOptions{	
 	-fx-pref-width: 80px;
 	-fx-pref-height: 80px;	
 }
 
-
-/*.searchProductLabel{
-	-fx-margin: 10px 0 0 0;
-}
-.searchProductField{
-	-fx-margin: 10px 0 0 0;	
-}*/
-/* .createProductLabel{
-	-fx-pref-width: 120px;
-}*/
-.panelDetails{
-	-fx-background-color: white;
-	-fx-border-radius: 5px;
-	-fx-background-radius: 5px;	
-}
-
-
-
-
-
+/* Tablas */
 .table-cell {     
-    -fx-padding: 0; /* 2px, plus border adds 1px */
-    -fx-border-color: -fx-box-border -fx-box-border transparent transparent;  
-    -fx-font: 13px "Segoe UI";    
-    -fx-border-insets: 0;
+    -fx-border-color: transparent;  
+    -fx-background-color: rgba(255, 255, 255, 0.4);
 }
-
-
-.table-cell:hover {
-    -fx-background-color: #c2c2c2; /* hover individual en celda con datos */
+* .table-row-cell{	
+    -fx-background-color: white;
+    -fx-border-width: 0;    
 }
-
-.table-row-cell:empty, .table-cell:empty:hover {
-    -fx-background-color: #c2c2c2; /* hover individual en celda vacia */
-}
- 
-.table-row-cell:empty .table-cell {
-    -fx-border-width: 0px;
-    -fx-padding: 0px;
-}
-
-.table-view:row-selection .table-row-cell:filled:hover { 
-    -fx-background-color: rgba(255, 255, 255, 0.1);
-}
-
-.table-view:row-selection .table-row-cell:filled:selected:hover { 
-    -fx-background-color: #c2c2c2;
-}
-/*
-.table-view *:focused > .table-view *:selected{
-    -fx-table-cell-border-color: #8f8f8f;    
-	-fx-border-color: #8f8f8f;
-	-fx-border-style: none;
-    -fx-border-width: 0;
-	
-}*/
-.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected,
-.tree-table-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:selected,
-.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell .table-cell:selected,
-.tree-table-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell .tree-table-cell:selected {
-    -fx-background-color: #c2c2c2; /* Color de seleccion de fila */
-    -fx-background: #c2c2c2;
-    -fx-table-cell-border-color: #8f8f8f;    
-}
-.table-view:row-selection .table-row-cell:filled:selected { 
-    -fx-background-color: #c2c2c2; /* Color de la fila, cuando :hover sobre una fila seleccionada */
-}
-
-.table-view, .table-view:focused {
-  -fx-background-color: transparent,-fx-box-border,-fx-control-inner-background;
+* .table-cell:hover, * .table-cell:selected, * .table-cell:selected:hover,
+* .table-row-cell:hover, * .table-row-cell:selected, * .table-row-cell:selected:hover, * .table-row-cell:filled:hover,
+* .table-row-cell:filled:selected:hover
+{	
+    -fx-border-width: 0;    
+    -fx-background: #a4a4a4;
+    -fx-background-color: #a4a4a4;
 }
 .table-view .column-header .label{
-    -fx-text-fill: black;
-    -fx-alignment: CENTER;
     -fx-font-weight: 400;
 }
-
 .table-view .column-header:hover {
-    -fx-background-color: whitesmoke; /* Hover individual en nombre de columna */
+    -fx-background-color: rgba(0, 0, 0, 0.1); /* Hover individual en nombre de columna */
 }
-
-.table-view .column-header /* , .table-view .filler */ {
-    -fx-background-color: #cdcdcd; /* Color del header */   
+.table-view .column-header {
+    -fx-background-color: #cdcdcd; /*  Color del header */   
     -fx-size: 35;
     -fx-border-color: #9a9a9a; /* Color de borde de la tabla */
-    -fx-border-width: 0 0 3 0;
+    -fx-border-width: 1 0;
     -fx-border-insets: 0;
 }
-
 .table-view .column-header-background {
-    -fx-background-color: transparent;/* Si el de arriba es transparent  */
+    -fx-background-color: transparent; /* Si el de arriba es transparent  */
 }
 
-.tableButton{
-	-fx-font-size: 9.3px;
-	-fx-text-fill: white;	
-}
-.tableButton{
-	-fx-cursor: hand;	
-}
-.deleteButton{
-	-fx-border-radius: 5;
-	-fx-background-radius: 5;
-	-fx-background-color: #7e002e;
-}
-.deleteButton:hover{
-	-fx-background-color: #a4003b;
-}
-.detailsButton{
-	-fx-border-radius: 5;
-	-fx-background-radius: 5;
-	-fx-background-color: #e7bd29;
-	
-}
-.detailsButton:hover{
-	-fx-background-color: #b3931f;	
-}
-
-
-
-
+/* Tab */
 .tab-content-area {
-    /*-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #cdcdcd, #9e9e9e);*/	
 	-fx-background-color: #cdcdcd;
 	-fx-background-radius: 5 5 5 5;
 }
-.tab 
-{
+.tab {
 	-fx-background-color: rgba(255, 255, 255, 0.6);
 	-fx-pref-height: 25px;	
 	-fx-pref-width: 90px;
 }
-
-.tab:hover 
-{
+.tab:hover {
 	-fx-background-color: rgba(255, 255, 255, 0.8);
 }
-.tab:selected 
-{
+.tab:selected {
 	-fx-background-color: #cdcdcd;
 }
-.tab-pane *.tab-header-background 
-{
+.tab-pane *.tab-header-background {
 -fx-background-color: TRANSPARENT;
 }
 .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
@@ -242,80 +137,37 @@
 }
 
 
-#controlObjetos #descriptionLabel{
-	-fx-border-radius: 10 10 0 0;
-	-fx-background-radius: 10 10 0 0;
-	-fx-padding: 3;
-}
-
-
-.labelSale{
+/* Label */
+.styledLabel{
 	-fx-font-family: 'Montserrat', 'sans-serif';
 	-fx-font-size: 14px;
 	-fx-font-weight: 200;	
-}
-#controlObjetos .inTab Label, .labelSale{	
-	-fx-background-color: #2c225c;
 	-fx-text-fill: white;
-	-fx-padding: 5px;
+	-fx-border-color: gray;
+	-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.1, 0.0, 0.0);	
+}
+
+.verticalLabel{
+	-fx-border-radius: 10 10 0 0;
+	-fx-background-radius: 10 10 0 0;
+	-fx-border-width: 1 1 0 1;
+	-fx-padding: 3;
+}
+.horizontalLabel {	
 	-fx-border-radius: 10 0 0 10;
 	-fx-background-radius: 10 0 0 10;
 	-fx-border-width: 1 0 1 1;
-	-fx-border-color: gray;
-	-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.1, 0.0, 0.0);
-}
-#controlObjetos Label {
-	-fx-font-family: 'Montserrat', 'sans-serif';
-	-fx-font-size: 14px;
-	-fx-text-fill: black; 	
-	-fx-font-weight: 200;
+	-fx-padding: 5px;
 }
 
-#controlObjetos CustomTextField, 
-#controlObjetos TextArea, 
-#controlObjetos Spinner, #controlObjetos Button, #controlObjetos ComboBox, #controlObjetos CheckComboBox, .hoverController {
-	-fx-font-family: 'Montserrat', 'sans-serif';
-	-fx-font-size: 12px;
-	-fx-text-fill: black; 	
-	-fx-text-style: 100;
-	-fx-border-radius: 0 10 10 0;
-	-fx-background-radius: 0 10 10 0;
-	-fx-border-width: 1 1 1 0;
-}
 #controlObjetos CustomTextField, #controlObjetos Spinner, #controlObjetos ComboBox, #controlObjetos CheckComboBox, .hoverController{
 	-fx-pref-height: 32px;
 	-fx-max-height: 32px;
 }
-#controlObjetos CustomTextField:hover, #controlObjetos CustomTextField:focused,
-.spinner:focused > .text-field, .spinner:hover > .text-field,
-#controlObjetos ComboBox:hover, #controlObjetos ComboBox:focused,
-#controlObjetos .CheckComboBox:hover, #controlObjetos .CheckComboBox:focused,
-#controlObjetos TextArea:hover, #controlObjetos TextArea:focused,
-.hoverController:hover, .hoverController:focused
-{
-	-fx-background-color: #aba6c5;
-}
-#controlObjetos CheckComboBox:editable:hover , #controlObjetos CheckComboBox:focused * {	
-	-fx-background-color: #aba6c5;
-}
 
-.squareNode {
-	-fx-border-radius: 0 0 0 0;
-	-fx-background-radius: 0 0 0 0;	
-	-fx-border-width: 0;
-}
-.borderedNode{		
-	-fx-border-radius: 10 10 10 10;
-	-fx-background-radius: 10 10 10 10;	
-	-fx-border-width: 0;
-}
-.spinner .increment-arrow-button:hover,
-.spinner .decrement-arrow-button:hover,
-.tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button:hover {
-    -fx-color: #aba6c5;
-}
+
+
 .progress-indicator:indeterminate > .spinner {
-    /** Applying to undo styling from .spinner, reported in RT-37965 */
     -fx-background-color: black;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
@@ -323,7 +175,6 @@
 
 
 #historyPane Label {
-	-fx-font-family: 'Montserrat', 'sans-serif';
 	-fx-font-size: 14px;
 	-fx-text-fill: black; 	
 	-fx-font-weight: 200;
@@ -336,13 +187,6 @@
     -fx-alignment: CENTER;
     -fx-border-width: 0;
 }
-#historyPane #tableSale .table-cell:hover{
-	-fx-background-color: transparent;
-}
-#historyPane #tableSale TableView2 {
-	-fx-background-color: transparent;	
-}
-
 #historyPane #tableSale .table-row-cell {
     -fx-background-radius: 3em;	
 	-fx-border-radius: 0;
@@ -350,24 +194,31 @@
 	-fx-border-color: white;
 	-fx-border-insets: -2;
 }
-#historyPane #tableSale .table-row-cell:filled {
-    -fx-background-color: #a4a4a4; 
-}
-#historyPane #tableSale .table-row-cell:hover {
-    -fx-background-color: #cacaca;    
-}
-#historyPane #tableSale .table-view .column-header {
-	-fx-border-color: transparent;
-    -fx-background-color: #a4a4a4; 
-}
-#historyPane #tableSale .table-view .column-header:hover{
-    -fx-background-color: #cacaca;    
-	-fx-border-color: transparent;
+#historyPane #tableSale .table-cell:hover,
+#historyPane #tableSale TableView2 {
+	-fx-background-color: transparent;	
 }
 
 .split-pane > .split-pane-divider {
+	-fx-min-width: 20px;
 	-fx-background-color: transparent;	
 }
+
+.labelFormTitle{
+	-fx-font-size: 15px;
+	-fx-font-weight: 700; 	
+}
+.labelForm{
+	-fx-font-weight: 700; 
+}
+
+* .check-box:indeterminated > .box > .mark {
+	-fx-shape: "M 17.0001 9 L 10 16 L 7 13";
+}
+* .check-box > .box > .mark {
+	-fx-shape: "M163.865,436.934c-14.406,0.006-28.222-5.72-38.4-15.915L9.369,304.966c-12.492-12.496-12.492-32.752,0-45.248l0,0   c12.496-12.492,32.752-12.492,45.248,0l109.248,109.248L452.889,79.942c12.496-12.492,32.752-12.492,45.248,0l0,0   c12.492,12.496,12.492,32.752,0,45.248L202.265,421.019C192.087,431.214,178.271,436.94,163.865,436.934z";
+}
+
 
 
 

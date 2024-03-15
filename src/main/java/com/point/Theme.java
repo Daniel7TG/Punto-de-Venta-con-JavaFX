@@ -4,15 +4,14 @@ import javafx.scene.paint.Color;
 
 public enum Theme {
 
-//	BLUE(Color.web("#4a5989"), Color.web("#9cb6dd"),
-//			Color.web("#e7f0f8"), Color.web("#f2f7fb"), Color.web("#6374ae"), Color.web("#6374ae"),
-//			Color.web("#6374ae"), Color.web("#FFFFFF"),
-//			Color.web("#414e6e"));
-	
-	BLUE("#4a5989", "#9cb6dd",
-			"#e7f0f8", "#f2f7fb", "#6374ae", "#6374ae",
-			"#6374ae", "#FFFFFF",
-			"#414e6e");
+//	BLUE("#4a5989", "#9cb6dd",
+//			"#e7f0f8", "#f2f7fb", "#6374ae", "#6374ae",
+//			"#6374ae", "#FFFFFF",
+//			"#414e6e");
+	DARK("#6d6d6d", "#888888",
+			 "#6d6d6d", "#5d5d5d", "#000000", "#FFFFFF",
+			 "#000000", "#5d5d5d",
+			 "#d1d1d1");
 	
 	
 	private String backgroundA, backgroundB, 

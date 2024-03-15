@@ -1,8 +1,10 @@
 package com.point.controllers;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.point.IndexApp;
 import com.point.interfaces.DraggedScene;
 import com.point.models.Configuration;
 
@@ -38,7 +40,7 @@ public class ConfigurationController implements Initializable, DraggedScene {
 		spinnerValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100);
 		confSellAmount.setValueFactory(spinnerValue);
 		
-		confTheme.setItems(FXCollections.observableArrayList("BlueTheme", "nothing"));
+		confTheme.setItems(FXCollections.observableArrayList("Blue Theme", "Red Theme", "Silver Theme", "nothing"));
 		loadConfig();
 	}
 	
@@ -61,7 +63,7 @@ public class ConfigurationController implements Initializable, DraggedScene {
 	}
 	
 	public void saveConfig() {
-		
+		String theme = Configuration.getConfig().getTheme();
 		Configuration config = new Configuration(
 				confTheme.getSelectionModel().getSelectedItem(),
 				confSkipSession.isSelected(),
@@ -69,8 +71,12 @@ public class ConfigurationController implements Initializable, DraggedScene {
 				confAutoProd.isSelected(),
 				confAlerts.isSelected(),
 				confSellAmount.getValue()
-				);
+				);		
 		Configuration.saveConfig(config);
+		if(!theme.equals(config.getTheme())) {
+			IndexApp.updateStyle();
+		}
+		
 		
 		closeConfig();
 	}

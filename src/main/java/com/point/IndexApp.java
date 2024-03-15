@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.point.controllers.LoginController;
 import com.point.controllers.MainController;
@@ -23,6 +24,12 @@ import com.point.models.Configuration;
 
 public class IndexApp extends Application {
 
+	public static final String GLOBAL = "styles/Global.css";
+	private static final String THEME_BLUE = "styles/ThemeBlue.css";
+	private static final String THEME_DARK = "styles/ThemeDark.css";
+	private static final String THEME_RED = "styles/ThemeRed.css";
+	private static final String THEME_SILVER = "styles/ThemeSilver.css";
+	private static final List<String> STYLE_LIST = List.of(THEME_BLUE, THEME_RED, THEME_SILVER);
 	private static Stage stage;
 	
     @Override
@@ -63,7 +70,14 @@ public class IndexApp extends Application {
     	if(Configuration.getConfig().getRememberUser() != ""  & fxml.equals("login")) 
     		((LoginController)fxmlLoader.getController()).preSetUsername(Configuration.getConfig().getRememberUser());
     	
-    	setTheme(root);
+    	setTheme(root, GLOBAL);
+    	setStyles(root);
+    	
+    	try {
+			root.getStylesheets().add(IndexApp.class.getClassLoader().getResource(GLOBAL).toURI().toString());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
     	
     	stage.setTitle(title);
         stage.setScene(scene);
@@ -73,34 +87,47 @@ public class IndexApp extends Application {
         return fxmlLoader.getController();
     }
 
+    public static void updateStyle() {
+    	setStyles((Parent)stage.getScene().getRoot());
+    }
+    public static void cleanStylesheets(Parent root) {
+    	for(int i = 0; i < root.getStylesheets().size(); i++) {
+    		String style = root.getStylesheets().get(i);
+    		String[] array = style.split("/");
+    		String stylePath = String.join("/", array[array.length-2], array[array.length-1]);
+    		if(STYLE_LIST.contains(stylePath)) root.getStylesheets().remove(i);    		
+    	}    		
+    }
     
-//    private static Parent loadFXML(String fxml) throws IOException  {
-//		
-//    }
-
+    public static void setStyles(Parent root) {
+    	cleanStylesheets(root);
+    	switch(Configuration.getConfig().getTheme()) {
+    	case "Blue Theme":
+    		setTheme(root, THEME_BLUE);
+    		break;
+    	case "Dark Theme":
+    		setTheme(root, THEME_DARK);
+    		break;
+    	case "Red Theme":
+    		setTheme(root, THEME_RED);
+    		break;
+    	case "Silver Theme":
+    		setTheme(root, THEME_SILVER);
+    		break;
+    	}    
+    }
     
     public static void main(String[] args) {
         launch(args);
     } 
     
     
-    public static void setTheme(Parent root) {
-    	Theme theme = Theme.BLUE;
+    public static void setTheme(Parent root, String styles) {
     	try {
-			root.getStylesheets().add(IndexApp.class.getClassLoader().getResource("styles/ThemeBlue.css").toURI().toString());
+			root.getStylesheets().add(IndexApp.class.getClassLoader().getResource(styles).toURI().toString());
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-		}
-    	
-//    	root.setStyle(
-//    			String.format("* Button { \n"
-//    			+ "-fx-background-color: %s;\n"
-//    			+ "-fx-border-color: %s;\n"
-//    			+ "-fx-text-fill: %s;\n"
-//    			+ "}", 
-//    			theme.getButtonBg(), theme.getButtonBorder(), theme.getButtonLabel() ) 
-//    			);
-    	
+		}    	
     }
     
     

@@ -116,16 +116,17 @@ public class Configuration {
 	}
 	
 	
-	public static void saveConfig(Configuration config) {
-		System.out.println(config.toString());
+	public static void saveConfig(Configuration newConfig) {
+//		System.out.println(config.toString());
+		config = newConfig;
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		map.put("theme", config.getTheme());
-		map.put("skipSession", config.isSkipSession());
-		map.put("rememberUser", config.getRememberUser());
-		map.put("autoProducts", config.isAutoProducts());
-		map.put("activateAlerts", config.isActivateAlerts());
-		map.put("saleDefAmount", config.getSaleDefAmount());		
+		map.put("theme", newConfig.getTheme());
+		map.put("skipSession", newConfig.isSkipSession());
+		map.put("rememberUser", newConfig.getRememberUser());
+		map.put("autoProducts", newConfig.isAutoProducts());
+		map.put("activateAlerts", newConfig.isActivateAlerts());
+		map.put("saleDefAmount", newConfig.getSaleDefAmount());		
 		JSONObject jo = new JSONObject(map);
 
        	File file = new File("resources/config/configuration.json");
